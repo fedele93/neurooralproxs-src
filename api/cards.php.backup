@@ -1,0 +1,72 @@
+<?php
+session_start();
+
+header('Access-Control-Allow-Origin: *');
+header('Access-Control-Allow-Methods: GET, POST, OPTIONS');
+header('Access-Control-Allow-Headers: Content-Type');
+header('Content-Type: application/json');
+
+if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
+    http_response_code(200);
+    exit();
+}
+
+// Verifica autenticazione
+if (!isset($_SESSION['user_id'])) {
+    http_response_code(401);
+    echo json_encode(['error' => 'Not authenticated']);
+    exit();
+}
+
+require_once 'database.php';
+
+$db = new DatabaseManager();
+$method = $_SERVER['REQUEST_METHOD'];
+$userId = $_SESSION['user_id'];
+
+// GET /api/cards - Ottieni card "due"
+if ($method === 'GET') {
+    $limit = isset($_GET['limit']) ? (int)$_GET['limit'] : 20;
+    $cards = $db->getDueCards($userId, $limit);
+    
+    if (isset($cards['error'])) {
+        http_response_code(500);
+    } else {
+        http_response_code(200);
+    }
+    
+    echo json_encode($cards);
+}
+
+// POST /api/cards - Aggiungi nuova card
+elseif ($method === 'POST') {
+    $input = json_decode(file_get_contents('php://input'), true);
+    
+    if (!isset($input['category']) || !isset($input['question']) || !isset($input['answer'])) {
+        http_response_code(400);
+        echo json_encode(['error' => 'Missing required fields: category, question, answer']);
+        exit();
+    }
+    
+    $type = $input['type'] ?? 'definition';
+    $result = $db->addFlashcard(
+        $userId,
+        $input['category'],
+        $input['question'],
+        $input['answer'],
+        $type
+    );
+    
+    if (isset($result['error'])) {
+        http_response_code(500);
+    } else {
+        http_response_code(201);
+    }
+    
+    echo json_encode($result);
+}
+
+else {
+    http_response_code(405);
+    echo json_encode(['error' => 'Method not allowed']);
+}

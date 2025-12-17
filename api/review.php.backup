@@ -1,0 +1,65 @@
+<?php
+session_start();
+
+header('Access-Control-Allow-Origin: *');
+header('Access-Control-Allow-Methods: POST, OPTIONS');
+header('Access-Control-Allow-Headers: Content-Type');
+header('Content-Type: application/json');
+
+if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
+    http_response_code(200);
+    exit();
+}
+
+if (!isset($_SESSION['user_id'])) {
+    http_response_code(401);
+    echo json_encode(['error' => 'Not authenticated']);
+    exit();
+}
+
+require_once 'database.php';
+
+if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+    http_response_code(405);
+    echo json_encode(['error' => 'Method not allowed']);
+    exit();
+}
+
+$input = json_decode(file_get_contents('php://input'), true);
+
+if (!isset($input['card_id']) || !isset($input['quality'])) {
+    http_response_code(400);
+    echo json_encode(['error' => 'Missing fields: card_id, quality']);
+    exit();
+}
+
+$qualityMapping = [
+    'easy' => 5,
+    'medium' => 3,
+    'hard' => 1
+];
+
+$quality = $input['quality'];
+
+if (is_string($quality) && isset($qualityMapping[$quality])) {
+    $quality = $qualityMapping[$quality];
+}
+
+$quality = (int)$quality;
+
+if ($quality < 0 || $quality > 5) {
+    http_response_code(400);
+    echo json_encode(['error' => 'Quality must be 0-5 or valid string']);
+    exit();
+}
+
+$db = new DatabaseManager();
+$result = $db->reviewCard($_SESSION['user_id'], $input['card_id'], $quality);
+
+if (isset($result['error'])) {
+    http_response_code(500);
+} else {
+    http_response_code(200);
+}
+
+echo json_encode($result);
