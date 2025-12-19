@@ -120,6 +120,19 @@
             background: #c7d0ff;
         }
         
+        button.danger {
+            background: #ff6b6b;
+        }
+        
+        button.danger:hover {
+            background: #ee5a5a;
+        }
+        
+        button.small {
+            padding: 8px 16px;
+            font-size: 13px;
+        }
+        
         /* Flashcard per review */
         .flashcard {
             background: #f8f9fa;
@@ -240,6 +253,81 @@
             resize: vertical; 
         }
         
+        /* Lista carte per gestione */
+        .cards-list {
+            margin-top: 20px;
+        }
+        
+        .card-item {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 12px;
+            border-left: 4px solid #667eea;
+        }
+        
+        .card-item-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 15px;
+        }
+        
+        .card-item-content {
+            flex: 1;
+        }
+        
+        .card-item-question {
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 5px;
+        }
+        
+        .card-item-answer {
+            font-size: 13px;
+            color: #666;
+            margin-bottom: 8px;
+            max-height: 60px;
+            overflow: hidden;
+        }
+        
+        .card-item-meta {
+            font-size: 11px;
+            color: #888;
+        }
+        
+        .card-item-actions {
+            display: flex;
+            gap: 8px;
+            flex-shrink: 0;
+        }
+        
+        .card-item-image {
+            max-width: 80px;
+            max-height: 60px;
+            border-radius: 5px;
+            margin-right: 10px;
+        }
+        
+        /* Filtro categorie */
+        .filter-bar {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+        
+        .filter-bar select {
+            width: auto;
+            min-width: 200px;
+        }
+        
+        .filter-bar input {
+            flex: 1;
+            min-width: 200px;
+        }
+        
         /* Sezione categorie */
         .category-stats {
             margin-top: 20px;
@@ -276,6 +364,62 @@
         .ef-medium { background: #fff3cd; color: #856404; }
         .ef-low { background: #f8d7da; color: #721c24; }
         
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        
+        .modal.show {
+            display: flex;
+        }
+        
+        .modal-content {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            max-width: 600px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+        
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .modal-header h2 {
+            color: #667eea;
+            margin: 0;
+        }
+        
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: #888;
+            padding: 0;
+        }
+        
+        .modal-close:hover {
+            color: #333;
+            background: none;
+            transform: none;
+        }
+        
         /* Toast notifications */
         .toast {
             position: fixed;
@@ -288,7 +432,7 @@
             opacity: 0;
             transform: translateY(20px);
             transition: all 0.3s;
-            z-index: 1000;
+            z-index: 2000;
         }
         
         .toast.show {
@@ -302,9 +446,7 @@
         
         /* Utility */
         .hidden { display: none !important; }
-        
         .text-center { text-align: center; }
-        
         .mb-20 { margin-bottom: 20px; }
         
         /* Responsive */
@@ -313,6 +455,10 @@
             .stats-dashboard { grid-template-columns: repeat(2, 1fr); }
             .rating-buttons { flex-direction: column; }
             .rating-btn { width: 100%; }
+            .card-item-header { flex-direction: column; }
+            .card-item-actions { margin-top: 10px; }
+            .filter-bar { flex-direction: column; }
+            .filter-bar select, .filter-bar input { width: 100%; }
         }
     </style>
 </head>
@@ -355,6 +501,9 @@
                 </button>
                 <button onclick="showAddCard()" class="secondary">
                     ➕ Aggiungi Carta
+                </button>
+                <button onclick="showManageCards()" class="secondary">
+                    ✏️ Gestisci Carte
                 </button>
                 <button onclick="showCategoryStats()" class="secondary">
                     📊 Statistiche
@@ -448,7 +597,7 @@
                     <label for="newImageUrl">URL Immagine (opzionale)</label>
                     <input type="text" id="newImageUrl" placeholder="https://esempio.com/immagine.jpg">
                     <p style="font-size: 12px; color: #888; margin-top: 5px;">
-                        💡 Usa immagini da Wikimedia Commons o repository liberi per neuroanatomia
+                        💡 Usa immagini da Wikimedia Commons per neuroanatomia
                     </p>
                 </div>
             </div>
@@ -459,6 +608,28 @@
                 </button>
                 <button onclick="showMenu()" class="secondary">
                     ← Annulla
+                </button>
+            </div>
+        </div>
+        
+        <!-- Sezione Gestisci Carte -->
+        <div id="manageCardsSection" class="hidden">
+            <h2 style="margin-bottom: 20px;">✏️ Gestisci Carte</h2>
+            
+            <div class="filter-bar">
+                <select id="filterCategory" onchange="filterCards()">
+                    <option value="">Tutte le categorie</option>
+                </select>
+                <input type="text" id="filterSearch" placeholder="Cerca nelle domande..." oninput="filterCards()">
+            </div>
+            
+            <div class="cards-list" id="cardsList">
+                Caricamento...
+            </div>
+            
+            <div class="text-center" style="margin-top: 20px;">
+                <button onclick="showMenu()" class="secondary">
+                    ← Torna al Menu
                 </button>
             </div>
         </div>
@@ -498,6 +669,65 @@
         </div>
     </div>
     
+    <!-- Modal Modifica Carta -->
+    <div class="modal" id="editModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>✏️ Modifica Carta</h2>
+                <button class="modal-close" onclick="closeEditModal()">×</button>
+            </div>
+            
+            <input type="hidden" id="editCardId">
+            
+            <div class="form-group">
+                <label for="editCategory">Categoria</label>
+                <select id="editCategory">
+                    <option value="Neuroanatomia">Neuroanatomia</option>
+                    <option value="Neurofisiologia">Neurofisiologia</option>
+                    <option value="Patologie Degenerative">Patologie Degenerative</option>
+                    <option value="Patologie Vascolari">Patologie Vascolari</option>
+                    <option value="Patologie Infiammatorie">Patologie Infiammatorie</option>
+                    <option value="Neuro-oncologia">Neuro-oncologia</option>
+                    <option value="Epilessia">Epilessia</option>
+                    <option value="Cefalee">Cefalee</option>
+                    <option value="Neuropatie">Neuropatie</option>
+                    <option value="Miopatie">Miopatie</option>
+                    <option value="Neuroimaging">Neuroimaging</option>
+                    <option value="Farmacologia">Farmacologia</option>
+                    <option value="Altro">Altro</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="editQuestion">Domanda</label>
+                <textarea id="editQuestion" rows="3"></textarea>
+            </div>
+            
+            <div class="form-group">
+                <label for="editAnswer">Risposta</label>
+                <textarea id="editAnswer" rows="6"></textarea>
+            </div>
+            
+            <div class="form-group">
+                <label for="editImageUrl">URL Immagine (opzionale)</label>
+                <input type="text" id="editImageUrl" placeholder="https://esempio.com/immagine.jpg">
+            </div>
+            
+            <div id="editImagePreview" class="hidden" style="margin-bottom: 15px;">
+                <img id="editImagePreviewImg" style="max-width: 200px; border-radius: 8px;">
+            </div>
+            
+            <div class="menu-buttons">
+                <button onclick="saveEditCard()">
+                    💾 Salva Modifiche
+                </button>
+                <button onclick="closeEditModal()" class="secondary">
+                    Annulla
+                </button>
+            </div>
+        </div>
+    </div>
+    
     <!-- Toast notification -->
     <div class="toast" id="toast"></div>
 
@@ -506,10 +736,10 @@
         let currentCard = null;
         let reviewedCount = 0;
         let remainingCards = 0;
+        let allCards = [];
         
         /**
          * INIZIALIZZAZIONE
-         * Carica statistiche all'avvio
          */
         document.addEventListener('DOMContentLoaded', function() {
             loadStats();
@@ -527,7 +757,7 @@
         }
         
         function hideAllSections() {
-            ['menuSection', 'reviewSection', 'addCardSection', 'statsSection', 'completedSection'].forEach(id => {
+            ['menuSection', 'reviewSection', 'addCardSection', 'manageCardsSection', 'statsSection', 'completedSection'].forEach(id => {
                 document.getElementById(id).classList.add('hidden');
             });
         }
@@ -535,10 +765,15 @@
         function showAddCard() {
             hideAllSections();
             document.getElementById('addCardSection').classList.remove('hidden');
-            // Reset form
             document.getElementById('newQuestion').value = '';
             document.getElementById('newAnswer').value = '';
             document.getElementById('newImageUrl').value = '';
+        }
+        
+        function showManageCards() {
+            hideAllSections();
+            document.getElementById('manageCardsSection').classList.remove('hidden');
+            loadAllCards();
         }
         
         function showCategoryStats() {
@@ -555,13 +790,11 @@
                 const response = await fetch('/api/stats.php');
                 const data = await response.json();
                 
-                // Aggiorna dashboard
                 document.getElementById('statTotal').textContent = data.total || 0;
                 document.getElementById('statDue').textContent = data.due || 0;
                 document.getElementById('statNew').textContent = data.new || 0;
                 document.getElementById('statEF').textContent = data.avg_ef ? data.avg_ef.toFixed(2) : '2.50';
                 
-                // Aggiorna insights
                 if (data.insights && data.insights.length > 0) {
                     document.getElementById('insightsList').innerHTML = 
                         data.insights.map(i => `<div class="insight-item">${i}</div>`).join('');
@@ -572,8 +805,6 @@
                 
             } catch (error) {
                 console.error('Errore caricamento stats:', error);
-                document.getElementById('insightsList').innerHTML = 
-                    '<div class="insight-item">❌ Errore nel caricamento delle statistiche</div>';
             }
         }
         
@@ -582,7 +813,6 @@
                 const response = await fetch('/api/stats.php');
                 const data = await response.json();
                 
-                // Statistiche per categoria
                 if (data.by_category && data.by_category.length > 0) {
                     document.getElementById('categoryStatsList').innerHTML = data.by_category.map(cat => {
                         const efClass = cat.avg_ef >= 2.3 ? 'ef-high' : (cat.avg_ef >= 2.0 ? 'ef-medium' : 'ef-low');
@@ -602,7 +832,6 @@
                     document.getElementById('categoryStatsList').innerHTML = '<p>Nessuna categoria trovata.</p>';
                 }
                 
-                // Carte problematiche
                 if (data.problematic_cards && data.problematic_cards.length > 0) {
                     document.getElementById('problematicCardsList').innerHTML = data.problematic_cards.map(card => `
                         <div class="category-item">
@@ -626,11 +855,187 @@
         }
         
         /**
+         * GESTIONE CARTE - Lista e Filtri
+         */
+        async function loadAllCards() {
+            try {
+                const response = await fetch('/api/cards.php');
+                const data = await response.json();
+                allCards = data.cards || [];
+                
+                // Popola il filtro categorie
+                const categories = [...new Set(allCards.map(c => c.category).filter(Boolean))];
+                const filterSelect = document.getElementById('filterCategory');
+                filterSelect.innerHTML = '<option value="">Tutte le categorie</option>' +
+                    categories.map(c => `<option value="${c}">${c}</option>`).join('');
+                
+                renderCardsList(allCards);
+                
+            } catch (error) {
+                console.error('Errore:', error);
+                document.getElementById('cardsList').innerHTML = '<p>Errore nel caricamento delle carte.</p>';
+            }
+        }
+        
+        function filterCards() {
+            const category = document.getElementById('filterCategory').value;
+            const search = document.getElementById('filterSearch').value.toLowerCase();
+            
+            let filtered = allCards;
+            
+            if (category) {
+                filtered = filtered.filter(c => c.category === category);
+            }
+            
+            if (search) {
+                filtered = filtered.filter(c => 
+                    c.question.toLowerCase().includes(search) || 
+                    c.answer.toLowerCase().includes(search)
+                );
+            }
+            
+            renderCardsList(filtered);
+        }
+        
+        function renderCardsList(cards) {
+            if (cards.length === 0) {
+                document.getElementById('cardsList').innerHTML = '<p>Nessuna carta trovata.</p>';
+                return;
+            }
+            
+            document.getElementById('cardsList').innerHTML = cards.map(card => {
+                const ef = parseFloat(card.easiness_factor).toFixed(2);
+                const lapses = card.lapses || 0;
+                const imageHtml = card.image_url ? 
+                    `<img src="${card.image_url}" class="card-item-image" onerror="this.style.display='none'">` : '';
+                
+                return `
+                    <div class="card-item">
+                        <div class="card-item-header">
+                            ${imageHtml}
+                            <div class="card-item-content">
+                                <div class="card-item-question">${escapeHtml(card.question)}</div>
+                                <div class="card-item-answer">${escapeHtml(card.answer)}</div>
+                                <div class="card-item-meta">
+                                    ${card.category || 'Senza categoria'} | EF: ${ef} | Fallimenti: ${lapses}
+                                </div>
+                            </div>
+                            <div class="card-item-actions">
+                                <button class="small secondary" onclick="openEditModal(${card.id})">✏️ Modifica</button>
+                                <button class="small danger" onclick="deleteCard(${card.id})">🗑️</button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+        
+        /**
+         * MODIFICA CARTA - Modal
+         */
+        async function openEditModal(cardId) {
+            try {
+                const response = await fetch(`/api/edit.php?id=${cardId}`);
+                const data = await response.json();
+                
+                if (data.success && data.card) {
+                    const card = data.card;
+                    document.getElementById('editCardId').value = card.id;
+                    document.getElementById('editCategory').value = card.category || 'Altro';
+                    document.getElementById('editQuestion').value = card.question;
+                    document.getElementById('editAnswer').value = card.answer;
+                    document.getElementById('editImageUrl').value = card.image_url || '';
+                    
+                    // Preview immagine
+                    if (card.image_url) {
+                        document.getElementById('editImagePreviewImg').src = card.image_url;
+                        document.getElementById('editImagePreview').classList.remove('hidden');
+                    } else {
+                        document.getElementById('editImagePreview').classList.add('hidden');
+                    }
+                    
+                    document.getElementById('editModal').classList.add('show');
+                } else {
+                    showToast('Carta non trovata', 'error');
+                }
+                
+            } catch (error) {
+                showToast('Errore nel caricamento', 'error');
+                console.error(error);
+            }
+        }
+        
+        function closeEditModal() {
+            document.getElementById('editModal').classList.remove('show');
+        }
+        
+        async function saveEditCard() {
+            const id = document.getElementById('editCardId').value;
+            const category = document.getElementById('editCategory').value;
+            const question = document.getElementById('editQuestion').value.trim();
+            const answer = document.getElementById('editAnswer').value.trim();
+            const imageUrl = document.getElementById('editImageUrl').value.trim();
+            
+            if (!question || !answer) {
+                showToast('Domanda e risposta sono obbligatorie', 'error');
+                return;
+            }
+            
+            try {
+                const response = await fetch('/api/edit.php', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ id, category, question, answer, image_url: imageUrl })
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    showToast('Carta aggiornata! ✅', 'success');
+                    closeEditModal();
+                    loadAllCards(); // Ricarica la lista
+                } else {
+                    showToast(data.error || 'Errore nel salvataggio', 'error');
+                }
+                
+            } catch (error) {
+                showToast('Errore di connessione', 'error');
+                console.error(error);
+            }
+        }
+        
+        /**
+         * ELIMINA CARTA
+         */
+        async function deleteCard(cardId) {
+            if (!confirm('Sei sicuro di voler eliminare questa carta?')) {
+                return;
+            }
+            
+            try {
+                const response = await fetch('/api/edit.php', {
+                    method: 'DELETE',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ id: cardId })
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    showToast('Carta eliminata', 'success');
+                    loadAllCards();
+                } else {
+                    showToast(data.error || 'Errore', 'error');
+                }
+                
+            } catch (error) {
+                showToast('Errore di connessione', 'error');
+                console.error(error);
+            }
+        }
+        
+        /**
          * SESSIONE DI REVIEW
-         * 
-         * Il cuore del sistema di spaced repetition.
-         * Ogni carta viene mostrata, l'utente auto-valuta la risposta,
-         * e l'algoritmo calcola quando rivedere la carta.
          */
         async function startReview() {
             reviewedCount = 0;
@@ -648,13 +1053,11 @@
                     currentCard = data.card;
                     remainingCards = data.remaining_today || 0;
                     
-                    // Aggiorna UI
                     document.getElementById('cardQuestion').textContent = currentCard.question;
                     document.getElementById('cardAnswer').textContent = currentCard.answer;
                     document.getElementById('reviewProgress').textContent = 
                         `Carta ${reviewedCount + 1} | Rimangono: ${remainingCards}`;
                     
-                    // Gestione immagine
                     if (currentCard.image_url) {
                         document.getElementById('cardImage').src = currentCard.image_url;
                         document.getElementById('cardImageContainer').classList.remove('hidden');
@@ -662,7 +1065,6 @@
                         document.getElementById('cardImageContainer').classList.add('hidden');
                     }
                     
-                    // Meta informazioni
                     const lapses = currentCard.lapses || 0;
                     const ef = parseFloat(currentCard.easiness_factor).toFixed(2);
                     let metaHtml = `Categoria: ${currentCard.category || 'Generale'} | EF: ${ef}`;
@@ -671,13 +1073,11 @@
                     }
                     document.getElementById('cardMeta').innerHTML = metaHtml;
                     
-                    // Reset stato
                     document.getElementById('cardAnswerSection').classList.add('hidden');
                     document.getElementById('ratingSection').classList.add('hidden');
                     document.getElementById('showAnswerBtn').classList.remove('hidden');
                     
                 } else {
-                    // Nessuna carta da ripassare
                     showSessionComplete();
                 }
                 
@@ -693,16 +1093,6 @@
             document.getElementById('showAnswerBtn').classList.add('hidden');
         }
         
-        /**
-         * VALUTAZIONE CARTA
-         * 
-         * quality: 1 = Difficile, 3 = Buona, 5 = Facile
-         * 
-         * La scelta influenza:
-         * - L'Easiness Factor (EF) della carta
-         * - L'intervallo fino alla prossima review
-         * - Il contatore dei lapses
-         */
         async function rateCard(quality) {
             if (!currentCard) return;
             
@@ -710,10 +1100,7 @@
                 const response = await fetch('/api/review.php', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ 
-                        card_id: currentCard.id, 
-                        quality: quality 
-                    })
+                    body: JSON.stringify({ card_id: currentCard.id, quality: quality })
                 });
                 
                 const data = await response.json();
@@ -721,7 +1108,6 @@
                 if (data.success) {
                     reviewedCount++;
                     
-                    // Feedback all'utente
                     let message = `Prossima review: ${data.interval_days} giorn${data.interval_days === 1 ? 'o' : 'i'}`;
                     if (data.warning) {
                         showToast(data.warning, 'warning');
@@ -729,7 +1115,6 @@
                         showToast(message, 'success');
                     }
                     
-                    // Carica prossima carta dopo breve pausa
                     setTimeout(() => loadNextCard(), 800);
                     
                 } else {
@@ -775,12 +1160,7 @@
                 const response = await fetch('/api/cards.php', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ 
-                        question, 
-                        answer, 
-                        category,
-                        image_url: imageUrl || null
-                    })
+                    body: JSON.stringify({ question, answer, category, image_url: imageUrl || null })
                 });
                 
                 if (response.ok) {
@@ -797,7 +1177,7 @@
         }
         
         /**
-         * TOAST NOTIFICATIONS
+         * UTILITY
          */
         function showToast(message, type = 'info') {
             const toast = document.getElementById('toast');
@@ -809,15 +1189,18 @@
             }, 3000);
         }
         
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+        
         /**
          * KEYBOARD SHORTCUTS
-         * 
-         * Spazio: mostra risposta
-         * 1, 2, 3: valuta carta (difficile, buona, facile)
          */
         document.addEventListener('keydown', function(e) {
-            // Solo se siamo in modalità review
             if (document.getElementById('reviewSection').classList.contains('hidden')) return;
+            if (document.getElementById('editModal').classList.contains('show')) return;
             
             if (e.code === 'Space') {
                 e.preventDefault();
@@ -830,6 +1213,13 @@
                 rateCard(3);
             } else if (e.key === '3' && !document.getElementById('ratingSection').classList.contains('hidden')) {
                 rateCard(5);
+            }
+        });
+        
+        // Chiudi modal cliccando fuori
+        document.getElementById('editModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeEditModal();
             }
         });
     </script>
