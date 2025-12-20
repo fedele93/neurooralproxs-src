@@ -39,7 +39,7 @@
         /* Dashboard delle statistiche */
         .stats-dashboard {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
             gap: 15px;
             margin-bottom: 25px;
         }
@@ -60,6 +60,17 @@
         .stat-box .label {
             font-size: 12px;
             opacity: 0.9;
+        }
+        
+        /* === NUOVO: Stat box per leeches con stile diverso === */
+        .stat-box.leeches {
+            background: linear-gradient(135deg, #ff6b6b 0%, #ee5a5a 100%);
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        
+        .stat-box.leeches:hover {
+            transform: scale(1.05);
         }
         
         /* Insights box */
@@ -126,6 +137,15 @@
         
         button.danger:hover {
             background: #ee5a5a;
+        }
+        
+        button.warning {
+            background: #feca57;
+            color: #333;
+        }
+        
+        button.warning:hover {
+            background: #feb940;
         }
         
         button.small {
@@ -266,6 +286,12 @@
             border-left: 4px solid #667eea;
         }
         
+        /* === NUOVO: Stile per carte leech === */
+        .card-item.leech {
+            border-left-color: #ff6b6b;
+            background: #fff5f5;
+        }
+        
         .card-item-header {
             display: flex;
             justify-content: space-between;
@@ -364,6 +390,30 @@
         .ef-medium { background: #fff3cd; color: #856404; }
         .ef-low { background: #f8d7da; color: #721c24; }
         
+        /* === NUOVO: Box informativo leeches === */
+        .leech-info-box {
+            background: #fff5f5;
+            border: 2px solid #ff6b6b;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 25px;
+        }
+        
+        .leech-info-box h3 {
+            color: #ff6b6b;
+            margin-bottom: 10px;
+        }
+        
+        .leech-info-box ul {
+            margin-left: 20px;
+            color: #666;
+            font-size: 14px;
+        }
+        
+        .leech-info-box li {
+            margin: 5px 0;
+        }
+        
         /* Modal */
         .modal {
             display: none;
@@ -433,6 +483,7 @@
             transform: translateY(20px);
             transition: all 0.3s;
             z-index: 2000;
+            max-width: 350px;
         }
         
         .toast.show {
@@ -443,11 +494,23 @@
         .toast.success { background: #26de81; }
         .toast.warning { background: #feca57; color: #333; }
         .toast.error { background: #ff6b6b; }
+        .toast.leech { background: #8b0000; }  /* NUOVO: toast speciale per leech */
         
         /* Utility */
         .hidden { display: none !important; }
         .text-center { text-align: center; }
         .mb-20 { margin-bottom: 20px; }
+        
+        /* Badge leech */
+        .leech-badge {
+            display: inline-block;
+            background: #ff6b6b;
+            color: white;
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-size: 11px;
+            margin-left: 8px;
+        }
         
         /* Responsive */
         @media (max-width: 600px) {
@@ -467,7 +530,7 @@
         <h1>🧠 NeuroOral Pro</h1>
         <p class="subtitle">Sistema di Ripetizione Spaziata per Neurologia</p>
         
-        <!-- Dashboard statistiche -->
+        <!-- Dashboard statistiche (MODIFICATO: aggiunto leeches) -->
         <div class="stats-dashboard" id="statsDashboard">
             <div class="stat-box">
                 <div class="number" id="statTotal">-</div>
@@ -484,6 +547,11 @@
             <div class="stat-box">
                 <div class="number" id="statEF">-</div>
                 <div class="label">EF Medio</div>
+            </div>
+            <!-- NUOVO: Box leeches cliccabile -->
+            <div class="stat-box leeches" id="statLeechesBox" onclick="showLeeches()" title="Clicca per gestire le carte sospese">
+                <div class="number" id="statLeeches">0</div>
+                <div class="label">🧛 Leeches</div>
             </div>
         </div>
         
@@ -634,6 +702,32 @@
             </div>
         </div>
         
+        <!-- === NUOVO: Sezione Gestione Leeches === -->
+        <div id="leechesSection" class="hidden">
+            <h2 style="margin-bottom: 20px;">🧛 Gestione Carte Sospese (Leeches)</h2>
+            
+            <div class="leech-info-box">
+                <h3>Cosa sono le Leeches?</h3>
+                <p style="margin-bottom: 10px;">Le carte sospese hanno raggiunto 4+ fallimenti. Prima di riabilitarle:</p>
+                <ul>
+                    <li><strong>Dividi</strong> la carta in 2-3 carte più specifiche</li>
+                    <li><strong>Aggiungi un'immagine</strong> (dual coding)</li>
+                    <li><strong>Crea una mnemonica</strong> o associazione</li>
+                    <li><strong>Verifica</strong> di avere le conoscenze prerequisite</li>
+                </ul>
+            </div>
+            
+            <div class="cards-list" id="leechesList">
+                Caricamento...
+            </div>
+            
+            <div class="text-center" style="margin-top: 20px;">
+                <button onclick="showMenu()" class="secondary">
+                    ← Torna al Menu
+                </button>
+            </div>
+        </div>
+        
         <!-- Sezione Statistiche Dettagliate -->
         <div id="statsSection" class="hidden">
             <h2 style="margin-bottom: 20px;">📊 Statistiche per Categoria</h2>
@@ -642,9 +736,9 @@
                 Caricamento...
             </div>
             
-            <h3 style="margin: 30px 0 15px 0;">⚠️ Carte Problematiche</h3>
+            <h3 style="margin: 30px 0 15px 0;">⚠️ Carte a Rischio (3+ fallimenti)</h3>
             <p style="font-size: 14px; color: #666; margin-bottom: 15px;">
-                Carte con 3+ fallimenti. Considera di dividerle in parti più piccole.
+                Queste carte potrebbero diventare leeches. Considera di semplificarle.
             </p>
             <div id="problematicCardsList">
                 Caricamento...
@@ -757,7 +851,8 @@
         }
         
         function hideAllSections() {
-            ['menuSection', 'reviewSection', 'addCardSection', 'manageCardsSection', 'statsSection', 'completedSection'].forEach(id => {
+            ['menuSection', 'reviewSection', 'addCardSection', 'manageCardsSection', 
+             'statsSection', 'completedSection', 'leechesSection'].forEach(id => {
                 document.getElementById(id).classList.add('hidden');
             });
         }
@@ -782,8 +877,15 @@
             loadDetailedStats();
         }
         
+        // === NUOVO: Funzione per mostrare sezione leeches ===
+        function showLeeches() {
+            hideAllSections();
+            document.getElementById('leechesSection').classList.remove('hidden');
+            loadLeeches();
+        }
+        
         /**
-         * STATISTICHE
+         * STATISTICHE (MODIFICATO: include leeches)
          */
         async function loadStats() {
             try {
@@ -794,6 +896,18 @@
                 document.getElementById('statDue').textContent = data.due || 0;
                 document.getElementById('statNew').textContent = data.new || 0;
                 document.getElementById('statEF').textContent = data.avg_ef ? data.avg_ef.toFixed(2) : '2.50';
+                
+                // NUOVO: Mostra leeches
+                const leechCount = data.leeches || 0;
+                document.getElementById('statLeeches').textContent = leechCount;
+                
+                // Nascondi il box leeches se non ce ne sono
+                const leechBox = document.getElementById('statLeechesBox');
+                if (leechCount === 0) {
+                    leechBox.style.display = 'none';
+                } else {
+                    leechBox.style.display = 'block';
+                }
                 
                 if (data.insights && data.insights.length > 0) {
                     document.getElementById('insightsList').innerHTML = 
@@ -808,6 +922,101 @@
             }
         }
         
+        // === NUOVO: Carica e mostra le leeches ===
+        async function loadLeeches() {
+            try {
+                const response = await fetch('/api/leeches.php');
+                const data = await response.json();
+                
+                if (data.leeches && data.leeches.length > 0) {
+                    document.getElementById('leechesList').innerHTML = data.leeches.map(card => `
+                        <div class="card-item leech">
+                            <div class="card-item-header">
+                                <div class="card-item-content">
+                                    <div class="card-item-question">
+                                        ${escapeHtml(card.question)}
+                                        <span class="leech-badge">${card.lapses} fallimenti</span>
+                                    </div>
+                                    <div class="card-item-answer">${escapeHtml(card.answer)}</div>
+                                    <div class="card-item-meta">
+                                        ${card.category || 'Senza categoria'} | EF: ${parseFloat(card.easiness_factor).toFixed(2)}
+                                    </div>
+                                </div>
+                                <div class="card-item-actions">
+                                    <button class="small secondary" onclick="openEditModal(${card.id})">✏️ Modifica</button>
+                                    <button class="small warning" onclick="reactivateLeech(${card.id})">🔄 Riattiva</button>
+                                    <button class="small danger" onclick="deleteLeech(${card.id})">🗑️</button>
+                                </div>
+                            </div>
+                        </div>
+                    `).join('');
+                } else {
+                    document.getElementById('leechesList').innerHTML = 
+                        '<p style="text-align: center; color: #26de81; padding: 30px;">✅ Nessuna carta sospesa! Ottimo lavoro!</p>';
+                }
+                
+            } catch (error) {
+                console.error('Errore:', error);
+                document.getElementById('leechesList').innerHTML = '<p>Errore nel caricamento.</p>';
+            }
+        }
+        
+        // === NUOVO: Riattiva una leech ===
+        async function reactivateLeech(cardId) {
+            if (!confirm('Hai modificato/semplificato questa carta? Riattivandola apparirà domani nel ripasso.')) {
+                return;
+            }
+            
+            try {
+                const response = await fetch('/api/leeches.php', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ action: 'reactivate', card_id: cardId })
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    showToast('Carta riattivata! Apparirà domani.', 'success');
+                    loadLeeches();
+                    loadStats();
+                } else {
+                    showToast(data.error || 'Errore', 'error');
+                }
+                
+            } catch (error) {
+                showToast('Errore di connessione', 'error');
+            }
+        }
+        
+        // === NUOVO: Elimina una leech ===
+        async function deleteLeech(cardId) {
+            if (!confirm('Eliminare definitivamente questa carta? L\'azione non può essere annullata.')) {
+                return;
+            }
+            
+            try {
+                const response = await fetch('/api/leeches.php', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ action: 'delete', card_id: cardId })
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    showToast('Carta eliminata', 'success');
+                    loadLeeches();
+                    loadStats();
+                } else {
+                    showToast(data.error || 'Errore', 'error');
+                }
+                
+            } catch (error) {
+                showToast('Errore di connessione', 'error');
+            }
+        }
+        
         async function loadDetailedStats() {
             try {
                 const response = await fetch('/api/stats.php');
@@ -816,15 +1025,16 @@
                 if (data.by_category && data.by_category.length > 0) {
                     document.getElementById('categoryStatsList').innerHTML = data.by_category.map(cat => {
                         const efClass = cat.avg_ef >= 2.3 ? 'ef-high' : (cat.avg_ef >= 2.0 ? 'ef-medium' : 'ef-low');
+                        const suspendedInfo = cat.suspended > 0 ? ` | 🧛 ${cat.suspended} sospese` : '';
                         return `
                             <div class="category-item">
                                 <div>
                                     <div class="category-name">${cat.category}</div>
                                     <div class="category-stats-mini">
-                                        ${cat.total} carte | ${cat.due} da ripassare | ${cat.total_lapses || 0} fallimenti
+                                        ${cat.total} carte | ${cat.due} da ripassare | ${cat.total_lapses || 0} fallimenti${suspendedInfo}
                                     </div>
                                 </div>
-                                <span class="category-ef ${efClass}">EF: ${cat.avg_ef}</span>
+                                <span class="category-ef ${efClass}">EF: ${cat.avg_ef || 'N/A'}</span>
                             </div>
                         `;
                     }).join('');
@@ -833,20 +1043,22 @@
                 }
                 
                 if (data.problematic_cards && data.problematic_cards.length > 0) {
-                    document.getElementById('problematicCardsList').innerHTML = data.problematic_cards.map(card => `
+                    document.getElementById('problematicCardsList').innerHTML = data.problematic_cards
+                        .filter(card => !card.suspended) // Mostra solo quelle non ancora sospese
+                        .map(card => `
                         <div class="category-item">
                             <div>
                                 <div class="category-name">${card.question.substring(0, 60)}...</div>
                                 <div class="category-stats-mini">
-                                    ${card.category || 'Senza categoria'} | ${card.lapses} fallimenti
+                                    ${card.category || 'Senza categoria'} | ${card.lapses} fallimenti (diventa leech a 4)
                                 </div>
                             </div>
                             <span class="category-ef ef-low">EF: ${parseFloat(card.easiness_factor).toFixed(2)}</span>
                         </div>
-                    `).join('');
+                    `).join('') || '<p style="color: #26de81;">✅ Nessuna carta a rischio!</p>';
                 } else {
                     document.getElementById('problematicCardsList').innerHTML = 
-                        '<p style="color: #26de81;">✅ Nessuna carta problematica!</p>';
+                        '<p style="color: #26de81;">✅ Nessuna carta a rischio!</p>';
                 }
                 
             } catch (error) {
@@ -863,7 +1075,6 @@
                 const data = await response.json();
                 allCards = data.cards || [];
                 
-                // Popola il filtro categorie
                 const categories = [...new Set(allCards.map(c => c.category).filter(Boolean))];
                 const filterSelect = document.getElementById('filterCategory');
                 filterSelect.innerHTML = '<option value="">Tutte le categorie</option>' +
@@ -906,15 +1117,17 @@
             document.getElementById('cardsList').innerHTML = cards.map(card => {
                 const ef = parseFloat(card.easiness_factor).toFixed(2);
                 const lapses = card.lapses || 0;
+                const isSuspended = card.suspended == 1;
                 const imageHtml = card.image_url ? 
                     `<img src="${card.image_url}" class="card-item-image" onerror="this.style.display='none'">` : '';
+                const leechBadge = isSuspended ? '<span class="leech-badge">🧛 Sospesa</span>' : '';
                 
                 return `
-                    <div class="card-item">
+                    <div class="card-item ${isSuspended ? 'leech' : ''}">
                         <div class="card-item-header">
                             ${imageHtml}
                             <div class="card-item-content">
-                                <div class="card-item-question">${escapeHtml(card.question)}</div>
+                                <div class="card-item-question">${escapeHtml(card.question)} ${leechBadge}</div>
                                 <div class="card-item-answer">${escapeHtml(card.answer)}</div>
                                 <div class="card-item-meta">
                                     ${card.category || 'Senza categoria'} | EF: ${ef} | Fallimenti: ${lapses}
@@ -922,6 +1135,9 @@
                             </div>
                             <div class="card-item-actions">
                                 <button class="small secondary" onclick="openEditModal(${card.id})">✏️ Modifica</button>
+                                ${isSuspended ? 
+                                    `<button class="small warning" onclick="reactivateLeech(${card.id})">🔄 Riattiva</button>` : 
+                                    ''}
                                 <button class="small danger" onclick="deleteCard(${card.id})">🗑️</button>
                             </div>
                         </div>
@@ -946,7 +1162,6 @@
                     document.getElementById('editAnswer').value = card.answer;
                     document.getElementById('editImageUrl').value = card.image_url || '';
                     
-                    // Preview immagine
                     if (card.image_url) {
                         document.getElementById('editImagePreviewImg').src = card.image_url;
                         document.getElementById('editImagePreview').classList.remove('hidden');
@@ -993,7 +1208,13 @@
                 if (data.success) {
                     showToast('Carta aggiornata! ✅', 'success');
                     closeEditModal();
-                    loadAllCards(); // Ricarica la lista
+                    
+                    // Ricarica la sezione attiva
+                    if (!document.getElementById('leechesSection').classList.contains('hidden')) {
+                        loadLeeches();
+                    } else if (!document.getElementById('manageCardsSection').classList.contains('hidden')) {
+                        loadAllCards();
+                    }
                 } else {
                     showToast(data.error || 'Errore nel salvataggio', 'error');
                 }
@@ -1024,6 +1245,7 @@
                 if (data.success) {
                     showToast('Carta eliminata', 'success');
                     loadAllCards();
+                    loadStats();
                 } else {
                     showToast(data.error || 'Errore', 'error');
                 }
@@ -1035,7 +1257,7 @@
         }
         
         /**
-         * SESSIONE DI REVIEW
+         * SESSIONE DI REVIEW (MODIFICATO: gestione leeches)
          */
         async function startReview() {
             reviewedCount = 0;
@@ -1069,7 +1291,7 @@
                     const ef = parseFloat(currentCard.easiness_factor).toFixed(2);
                     let metaHtml = `Categoria: ${currentCard.category || 'Generale'} | EF: ${ef}`;
                     if (lapses >= 3) {
-                        metaHtml += ` | ⚠️ ${lapses} fallimenti`;
+                        metaHtml += ` | ⚠️ ${lapses}/4 fallimenti`;
                     }
                     document.getElementById('cardMeta').innerHTML = metaHtml;
                     
@@ -1108,14 +1330,20 @@
                 if (data.success) {
                     reviewedCount++;
                     
-                    let message = `Prossima review: ${data.interval_days} giorn${data.interval_days === 1 ? 'o' : 'i'}`;
-                    if (data.warning) {
+                    // === NUOVO: Gestione speciale per leeches ===
+                    if (data.leech) {
+                        // Carta diventata leech - notifica prominente
+                        showToast(data.warning, 'leech');
+                        setTimeout(() => loadNextCard(), 2000); // Più tempo per leggere
+                    } else if (data.warning) {
+                        // Avviso carta a rischio
                         showToast(data.warning, 'warning');
+                        setTimeout(() => loadNextCard(), 1200);
                     } else {
+                        let message = `Prossima review: ${data.interval_days} giorn${data.interval_days === 1 ? 'o' : 'i'}`;
                         showToast(message, 'success');
+                        setTimeout(() => loadNextCard(), 800);
                     }
-                    
-                    setTimeout(() => loadNextCard(), 800);
                     
                 } else {
                     showToast('Errore nel salvataggio', 'error');
@@ -1184,9 +1412,12 @@
             toast.textContent = message;
             toast.className = 'toast show ' + type;
             
+            // Durata più lunga per messaggi leech
+            const duration = type === 'leech' ? 5000 : 3000;
+            
             setTimeout(() => {
                 toast.classList.remove('show');
-            }, 3000);
+            }, duration);
         }
         
         function escapeHtml(text) {
