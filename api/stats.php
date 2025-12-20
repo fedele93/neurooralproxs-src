@@ -1,12 +1,8 @@
 <?php
 /**
- * API Stats - Statistiche Migliorate
+ * API Stats - Statistiche con Leeches
  * 
- * Questo endpoint fornisce:
- * 1. Statistiche globali (totale, da ripassare, nuove)
- * 2. Breakdown per categoria (per identificare aree deboli)
- * 3. Carte problematiche (molti lapses)
- * 4. Statistiche di performance (EF medio, trend)
+ * NOVITÀ: Include conteggio e lista delle carte sospese (leeches)
  */
 
 header('Content-Type: application/json');
@@ -16,36 +12,24 @@ $db = getDatabase();
 
 // Statistiche globali
 $total = $db->query("SELECT COUNT(*) as count FROM flashcards WHERE user_id = 1")->fetch()['count'];
-$due = $db->query("SELECT COUNT(*) as count FROM flashcards WHERE user_id = 1 AND next_review <= date('now')")->fetch()['count'];
-$new = $db->query("SELECT COUNT(*) as count FROM flashcards WHERE user_id = 1 AND repetitions = 0")->fetch()['count'];
+$due = $db->query("SELECT COUNT(*) as count FROM flashcards WHERE user_id = 1 AND next_review <= date('now') AND (suspended IS NULL OR suspended = 0)")->fetch()['count'];
+$new = $db->query("SELECT COUNT(*) as count FROM flashcards WHERE user_id = 1 AND repetitions = 0 AND (suspended IS NULL OR suspended = 0)")->fetch()['count'];
 
-/**
- * EASINESS FACTOR MEDIO
- * 
- * Un EF medio alto (>2.3) indica che stai memorizzando bene il materiale.
- * Un EF medio basso (<2.0) indica difficoltà generale - potresti dover:
- * - Semplificare le carte (principio informazione minima)
- * - Aggiungere immagini (dual coding)
- * - Studiare più frequentemente
- */
-$avgEF = $db->query("SELECT AVG(easiness_factor) as avg_ef FROM flashcards WHERE user_id = 1")->fetch()['avg_ef'];
+// === NUOVO: Conteggio leeches (carte sospese) ===
+$leeches = $db->query("SELECT COUNT(*) as count FROM flashcards WHERE user_id = 1 AND suspended = 1")->fetch()['count'];
 
-/**
- * BREAKDOWN PER CATEGORIA
- * 
- * Questo è fondamentale per capire dove concentrare lo sforzo.
- * Categorie con:
- * - Molte carte "due" = urgenti da ripassare
- * - Molti lapses = argomento difficile, valuta di rivedere le carte
- * - EF basso medio = difficoltà consolidata, serve più pratica
- */
+// EF medio (solo carte attive)
+$avgEF = $db->query("SELECT AVG(easiness_factor) as avg_ef FROM flashcards WHERE user_id = 1 AND (suspended IS NULL OR suspended = 0)")->fetch()['avg_ef'];
+
+// Breakdown per categoria (escluse sospese per le statistiche "due")
 $categoryStats = $db->query("
     SELECT 
         COALESCE(category, 'Senza categoria') as category,
         COUNT(*) as total,
-        SUM(CASE WHEN next_review <= date('now') THEN 1 ELSE 0 END) as due,
-        SUM(CASE WHEN repetitions = 0 THEN 1 ELSE 0 END) as new,
-        ROUND(AVG(easiness_factor), 2) as avg_ef,
+        SUM(CASE WHEN next_review <= date('now') AND (suspended IS NULL OR suspended = 0) THEN 1 ELSE 0 END) as due,
+        SUM(CASE WHEN repetitions = 0 AND (suspended IS NULL OR suspended = 0) THEN 1 ELSE 0 END) as new,
+        SUM(CASE WHEN suspended = 1 THEN 1 ELSE 0 END) as suspended,
+        ROUND(AVG(CASE WHEN suspended IS NULL OR suspended = 0 THEN easiness_factor END), 2) as avg_ef,
         SUM(COALESCE(lapses, 0)) as total_lapses
     FROM flashcards 
     WHERE user_id = 1
@@ -53,32 +37,24 @@ $categoryStats = $db->query("
     ORDER BY due DESC, total_lapses DESC
 ")->fetchAll(PDO::FETCH_ASSOC);
 
-/**
- * CARTE PROBLEMATICHE
- * 
- * Carte con 3+ lapses meritano attenzione speciale.
- * Secondo il principio dell'informazione minima (SuperMemo [133]),
- * una carta troppo difficile spesso contiene troppe informazioni.
- * 
- * Consiglio: dividi queste carte in unità più piccole.
- * Es: "Descrivi la via piramidale" diventa 3-4 carte separate
- * su origine, decorso, decussazione, e innervazione.
- */
+// Carte problematiche (3+ lapses, non ancora sospese)
 $problematicCards = $db->query("
-    SELECT id, question, category, lapses, easiness_factor
+    SELECT id, question, category, lapses, easiness_factor, suspended
     FROM flashcards 
     WHERE user_id = 1 AND lapses >= 3
-    ORDER BY lapses DESC
-    LIMIT 10
+    ORDER BY suspended DESC, lapses DESC
+    LIMIT 15
 ")->fetchAll(PDO::FETCH_ASSOC);
 
-/**
- * CARTE RIVISTE OGGI
- * 
- * Tracciare l'attività giornaliera aiuta a mantenere la motivazione.
- * Gli studi sulla formazione di abitudini mostrano che vedere i
- * propri progressi aumenta la probabilità di continuare.
- */
+// === NUOVO: Lista completa leeches per gestione ===
+$leechCards = $db->query("
+    SELECT id, question, answer, category, lapses, easiness_factor
+    FROM flashcards 
+    WHERE user_id = 1 AND suspended = 1
+    ORDER BY lapses DESC
+")->fetchAll(PDO::FETCH_ASSOC);
+
+// Riviste oggi
 $reviewedToday = 0;
 $lastReviewCheck = $db->query("
     SELECT COUNT(*) as count 
@@ -89,12 +65,7 @@ if ($lastReviewCheck) {
     $reviewedToday = $lastReviewCheck->fetch()['count'];
 }
 
-/**
- * PREVISIONE CARICO SETTIMANA
- * 
- * Sapere quante carte arriveranno nei prossimi giorni
- * aiuta a pianificare le sessioni di studio.
- */
+// Previsione settimana
 $weekForecast = $db->query("
     SELECT 
         date(next_review) as review_date,
@@ -103,37 +74,36 @@ $weekForecast = $db->query("
     WHERE user_id = 1 
     AND next_review > date('now')
     AND next_review <= date('now', '+7 days')
+    AND (suspended IS NULL OR suspended = 0)
     GROUP BY date(next_review)
     ORDER BY review_date
 ")->fetchAll(PDO::FETCH_ASSOC);
 
-// Risposta JSON completa
+// Risposta JSON
 echo json_encode([
-    // Statistiche base
     'total' => (int)$total,
     'due' => (int)$due,
     'new' => (int)$new,
+    'leeches' => (int)$leeches,  // NUOVO
     'avg_ef' => round((float)$avgEF, 2),
     'reviewed_today' => (int)$reviewedToday,
-    
-    // Breakdown per categoria (per identificare aree deboli)
     'by_category' => $categoryStats,
-    
-    // Carte che richiedono attenzione
     'problematic_cards' => $problematicCards,
-    
-    // Previsione carico settimanale
+    'leech_cards' => $leechCards,  // NUOVO: lista completa per gestione
     'week_forecast' => $weekForecast,
-    
-    // Interpretazione automatica
-    'insights' => generateInsights($avgEF, $categoryStats, count($problematicCards))
+    'insights' => generateInsights($avgEF, $categoryStats, count($problematicCards), (int)$leeches)
 ], JSON_PRETTY_PRINT);
 
 /**
- * Genera insight automatici basati sui dati
+ * Genera insight automatici (MODIFICATO: include leeches)
  */
-function generateInsights($avgEF, $categories, $problematicCount) {
+function generateInsights($avgEF, $categories, $problematicCount, $leechCount) {
     $insights = [];
+    
+    // === NUOVO: Insight su leeches ===
+    if ($leechCount > 0) {
+        $insights[] = "🧛 Hai {$leechCount} carte sospese (leeches). Riformulale per riabilitarle.";
+    }
     
     // Insight su EF medio
     if ($avgEF < 2.0) {
@@ -142,9 +112,9 @@ function generateInsights($avgEF, $categories, $problematicCount) {
         $insights[] = "✅ Ottimo EF medio ({$avgEF}). Stai memorizzando bene il materiale!";
     }
     
-    // Insight su carte problematiche
+    // Insight su carte a rischio
     if ($problematicCount > 5) {
-        $insights[] = "📋 Hai {$problematicCount} carte con molti fallimenti. Riformulale secondo il principio dell'informazione minima.";
+        $insights[] = "📋 Hai {$problematicCount} carte a rischio (3+ fallimenti). Potrebbero diventare leeches.";
     }
     
     // Insight sulla categoria più debole
@@ -152,7 +122,7 @@ function generateInsights($avgEF, $categories, $problematicCount) {
         $weakest = null;
         $lowestEF = 3.0;
         foreach ($categories as $cat) {
-            if ($cat['avg_ef'] < $lowestEF && $cat['total'] >= 5) {
+            if ($cat['avg_ef'] && $cat['avg_ef'] < $lowestEF && $cat['total'] >= 5) {
                 $lowestEF = $cat['avg_ef'];
                 $weakest = $cat['category'];
             }
@@ -160,6 +130,10 @@ function generateInsights($avgEF, $categories, $problematicCount) {
         if ($weakest && $lowestEF < 2.2) {
             $insights[] = "📚 La categoria '{$weakest}' ha l'EF più basso ({$lowestEF}). Potrebbe richiedere più attenzione.";
         }
+    }
+    
+    if (empty($insights)) {
+        $insights[] = "✅ Tutto bene! Continua così.";
     }
     
     return $insights;
