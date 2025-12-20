@@ -574,7 +574,7 @@
 <body>
     <div class="container">
         <h1>🧠 NeuroOral Pro</h1>
-        <p class="subtitle">Sistema di Ripetizione Spaziata per Neurologia</p>
+        <p class="subtitle" id="appSubtitle">Sistema di Ripetizione Spaziata</p>
         
         <!-- === USER SWITCHER === -->
         <div class="user-switcher" id="userSwitcher">
@@ -922,6 +922,63 @@
         let currentUserId = 1;
         let users = [];
         
+        // === CATEGORIE PER UTENTE ===
+        const categoriesByUser = {
+            1: [ // Neurologia
+                'Neuroanatomia',
+                'Neurofisiologia',
+                'Patologie Degenerative',
+                'Patologie Vascolari',
+                'Patologie Infiammatorie',
+                'Neuro-oncologia',
+                'Epilessia',
+                'Cefalee',
+                'Neuropatie',
+                'Miopatie',
+                'Neuroimaging',
+                'Farmacologia',
+                'Altro'
+            ],
+            2: [ // Medicina Legale
+                'Tanatologia',
+                'Traumatologia Forense',
+                'Tossicologia Forense',
+                'Asfissiologia',
+                'Identificazione Personale',
+                'Responsabilità Professionale',
+                'Medicina Legale Penale',
+                'Medicina Legale Civile',
+                'Psicopatologia Forense',
+                'Sessuologia Forense',
+                'Genetica Forense',
+                'Altro'
+            ]
+        };
+        
+        // Popola i dropdown delle categorie in base all'utente
+        function updateCategoryDropdowns() {
+            const categories = categoriesByUser[currentUserId] || categoriesByUser[1];
+            const optionsHtml = categories.map(cat => 
+                `<option value="${cat}">${cat}</option>`
+            ).join('');
+            
+            // Aggiorna dropdown creazione
+            const newCatSelect = document.getElementById('newCategory');
+            if (newCatSelect) newCatSelect.innerHTML = optionsHtml;
+            
+            // Aggiorna dropdown modifica
+            const editCatSelect = document.getElementById('editCategory');
+            if (editCatSelect) editCatSelect.innerHTML = optionsHtml;
+            
+            // Aggiorna subtitle
+            const subtitle = document.getElementById('appSubtitle');
+            if (subtitle) {
+                subtitle.textContent = currentUserId === 2 
+                    ? 'Sistema di Ripetizione Spaziata per Medicina Legale' 
+                    : 'Sistema di Ripetizione Spaziata per Neurologia';
+            }
+        }
+        
         document.addEventListener('DOMContentLoaded', function() {
             loadUsers();
             document.getElementById('newClozeText').addEventListener('input', updateClozePreview);
@@ -935,9 +992,11 @@
                 users = data.users || [];
                 currentUserId = data.current_user?.id || 1;
                 renderUserSwitcher();
+                updateCategoryDropdowns();
                 loadStats();
             } catch (error) {
                 console.error('Errore caricamento utenti:', error);
+                updateCategoryDropdowns();
                 loadStats();
             }
         }
@@ -965,6 +1024,7 @@
                 if (data.success) {
                     currentUserId = userId;
                     renderUserSwitcher();
+                    updateCategoryDropdowns();
                     showToast(`Ciao ${data.user.display_name}!`, 'success');
                     showMenu();
                 }
