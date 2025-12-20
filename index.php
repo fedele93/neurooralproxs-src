@@ -62,7 +62,6 @@
             opacity: 0.9;
         }
         
-        /* === NUOVO: Stat box per leeches con stile diverso === */
         .stat-box.leeches {
             background: linear-gradient(135deg, #ff6b6b 0%, #ee5a5a 100%);
             cursor: pointer;
@@ -163,10 +162,16 @@
             min-height: 200px;
         }
         
+        /* === NUOVO: Stile per carte Cloze === */
+        .flashcard.cloze-card {
+            border-left-color: #9b59b6;
+        }
+        
         .flashcard-question {
             font-size: 18px;
             color: #333;
             margin-bottom: 20px;
+            line-height: 1.6;
         }
         
         .flashcard-answer {
@@ -176,6 +181,7 @@
             padding: 20px;
             border-radius: 10px;
             margin-top: 15px;
+            line-height: 1.6;
         }
         
         .flashcard-image {
@@ -192,6 +198,42 @@
             margin-top: 15px;
             padding-top: 15px;
             border-top: 1px solid #ddd;
+        }
+        
+        /* === NUOVO: Stili per Cloze === */
+        .cloze-blank {
+            background: #667eea;
+            color: white;
+            padding: 2px 12px;
+            border-radius: 4px;
+            font-weight: bold;
+            margin: 0 2px;
+        }
+        
+        .cloze-revealed {
+            background: #26de81;
+            color: white;
+            padding: 2px 12px;
+            border-radius: 4px;
+            font-weight: bold;
+            margin: 0 2px;
+        }
+        
+        .cloze-hint {
+            font-size: 12px;
+            color: #888;
+            margin-top: 10px;
+            font-style: italic;
+        }
+        
+        .cloze-type-badge {
+            display: inline-block;
+            background: #9b59b6;
+            color: white;
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-size: 11px;
+            margin-left: 8px;
         }
         
         /* Rating buttons */
@@ -273,6 +315,68 @@
             resize: vertical; 
         }
         
+        /* === NUOVO: Box informativo per Cloze === */
+        .cloze-help-box {
+            background: #f3e8ff;
+            border: 2px solid #9b59b6;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 20px;
+            font-size: 13px;
+        }
+        
+        .cloze-help-box h4 {
+            color: #9b59b6;
+            margin-bottom: 8px;
+        }
+        
+        .cloze-help-box code {
+            background: #e8d5f5;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: monospace;
+        }
+        
+        .cloze-help-box .example {
+            background: white;
+            padding: 10px;
+            border-radius: 6px;
+            margin-top: 10px;
+            border-left: 3px solid #9b59b6;
+        }
+        
+        /* Tab per tipo carta */
+        .card-type-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .card-type-tab {
+            padding: 10px 20px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            background: white;
+            cursor: pointer;
+            transition: all 0.3s;
+            color: #666;
+        }
+        
+        .card-type-tab:hover {
+            border-color: #667eea;
+        }
+        
+        .card-type-tab.active {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+        }
+        
+        .card-type-tab.active.cloze {
+            background: #9b59b6;
+            border-color: #9b59b6;
+        }
+        
         /* Lista carte per gestione */
         .cards-list {
             margin-top: 20px;
@@ -286,10 +390,14 @@
             border-left: 4px solid #667eea;
         }
         
-        /* === NUOVO: Stile per carte leech === */
         .card-item.leech {
             border-left-color: #ff6b6b;
             background: #fff5f5;
+        }
+        
+        /* === NUOVO: Stile per carte cloze nella lista === */
+        .card-item.cloze {
+            border-left-color: #9b59b6;
         }
         
         .card-item-header {
@@ -390,7 +498,7 @@
         .ef-medium { background: #fff3cd; color: #856404; }
         .ef-low { background: #f8d7da; color: #721c24; }
         
-        /* === NUOVO: Box informativo leeches === */
+        /* Box informativo leeches */
         .leech-info-box {
             background: #fff5f5;
             border: 2px solid #ff6b6b;
@@ -494,14 +602,14 @@
         .toast.success { background: #26de81; }
         .toast.warning { background: #feca57; color: #333; }
         .toast.error { background: #ff6b6b; }
-        .toast.leech { background: #8b0000; }  /* NUOVO: toast speciale per leech */
+        .toast.leech { background: #8b0000; }
         
         /* Utility */
         .hidden { display: none !important; }
         .text-center { text-align: center; }
         .mb-20 { margin-bottom: 20px; }
         
-        /* Badge leech */
+        /* Badge */
         .leech-badge {
             display: inline-block;
             background: #ff6b6b;
@@ -522,6 +630,7 @@
             .card-item-actions { margin-top: 10px; }
             .filter-bar { flex-direction: column; }
             .filter-bar select, .filter-bar input { width: 100%; }
+            .card-type-tabs { flex-direction: column; }
         }
     </style>
 </head>
@@ -530,7 +639,7 @@
         <h1>🧠 NeuroOral Pro</h1>
         <p class="subtitle">Sistema di Ripetizione Spaziata per Neurologia</p>
         
-        <!-- Dashboard statistiche (MODIFICATO: aggiunto leeches) -->
+        <!-- Dashboard statistiche -->
         <div class="stats-dashboard" id="statsDashboard">
             <div class="stat-box">
                 <div class="number" id="statTotal">-</div>
@@ -548,7 +657,6 @@
                 <div class="number" id="statEF">-</div>
                 <div class="label">EF Medio</div>
             </div>
-            <!-- NUOVO: Box leeches cliccabile -->
             <div class="stat-box leeches" id="statLeechesBox" onclick="showLeeches()" title="Clicca per gestire le carte sospese">
                 <div class="number" id="statLeeches">0</div>
                 <div class="label">🧛 Leeches</div>
@@ -627,9 +735,31 @@
             </div>
         </div>
         
-        <!-- Sezione Aggiungi Carta -->
+        <!-- === MODIFICATO: Sezione Aggiungi Carta con supporto Cloze === -->
         <div id="addCardSection" class="hidden">
             <h2 style="margin-bottom: 20px;">➕ Aggiungi Nuova Flashcard</h2>
+            
+            <!-- Tab per tipo carta -->
+            <div class="card-type-tabs">
+                <div class="card-type-tab active" id="tabBasic" onclick="switchCardType('basic')">
+                    📝 Carta Base
+                </div>
+                <div class="card-type-tab cloze" id="tabCloze" onclick="switchCardType('cloze')">
+                    🧩 Cloze (riempi spazi)
+                </div>
+            </div>
+            
+            <!-- Help box per Cloze (nascosto di default) -->
+            <div class="cloze-help-box hidden" id="clozeHelpBox">
+                <h4>🧩 Come creare carte Cloze</h4>
+                <p>Scrivi il testo e metti tra <code>{{doppie graffe}}</code> le parole da nascondere:</p>
+                <div class="example">
+                    <strong>Scrivi:</strong><br>
+                    La sindrome di {{Wallenberg}} è causata da occlusione della {{PICA}}.<br><br>
+                    <strong>Durante la review vedrai:</strong><br>
+                    La sindrome di <span class="cloze-blank">[...]</span> è causata da occlusione della <span class="cloze-blank">[...]</span>.
+                </div>
+            </div>
             
             <div class="form-section">
                 <div class="form-group">
@@ -651,14 +781,32 @@
                     </select>
                 </div>
                 
-                <div class="form-group">
-                    <label for="newQuestion">Domanda</label>
-                    <textarea id="newQuestion" placeholder="Es: Quali sono le caratteristiche cliniche della sindrome di Wallenberg?"></textarea>
+                <!-- Campi per carta BASE -->
+                <div id="basicCardFields">
+                    <div class="form-group">
+                        <label for="newQuestion">Domanda</label>
+                        <textarea id="newQuestion" placeholder="Es: Quali sono le caratteristiche cliniche della sindrome di Wallenberg?"></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="newAnswer">Risposta</label>
+                        <textarea id="newAnswer" placeholder="Scrivi la risposta completa..." rows="6"></textarea>
+                    </div>
                 </div>
                 
-                <div class="form-group">
-                    <label for="newAnswer">Risposta</label>
-                    <textarea id="newAnswer" placeholder="Scrivi la risposta completa..." rows="6"></textarea>
+                <!-- Campi per carta CLOZE -->
+                <div id="clozeCardFields" class="hidden">
+                    <div class="form-group">
+                        <label for="newClozeText">Testo con Cloze</label>
+                        <textarea id="newClozeText" placeholder="Es: La sindrome di {{Wallenberg}} è causata da occlusione della {{PICA}} e si manifesta con {{vertigine}}, {{disfagia}} e sindrome di {{Horner}}." rows="6"></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Anteprima</label>
+                        <div id="clozePreview" style="background: #f8f9fa; padding: 15px; border-radius: 8px; min-height: 60px;">
+                            <span style="color: #888;">L'anteprima apparirà qui...</span>
+                        </div>
+                    </div>
                 </div>
                 
                 <div class="form-group">
@@ -702,7 +850,7 @@
             </div>
         </div>
         
-        <!-- === NUOVO: Sezione Gestione Leeches === -->
+        <!-- Sezione Leeches -->
         <div id="leechesSection" class="hidden">
             <h2 style="margin-bottom: 20px;">🧛 Gestione Carte Sospese (Leeches)</h2>
             
@@ -713,7 +861,7 @@
                     <li><strong>Dividi</strong> la carta in 2-3 carte più specifiche</li>
                     <li><strong>Aggiungi un'immagine</strong> (dual coding)</li>
                     <li><strong>Crea una mnemonica</strong> o associazione</li>
-                    <li><strong>Verifica</strong> di avere le conoscenze prerequisite</li>
+                    <li><strong>Trasforma in Cloze</strong> per mantenere il contesto</li>
                 </ul>
             </div>
             
@@ -793,8 +941,11 @@
             </div>
             
             <div class="form-group">
-                <label for="editQuestion">Domanda</label>
+                <label for="editQuestion">Domanda / Testo Cloze</label>
                 <textarea id="editQuestion" rows="3"></textarea>
+                <p style="font-size: 12px; color: #888; margin-top: 5px;">
+                    💡 Per Cloze: usa {{doppie graffe}} per nascondere parole
+                </p>
             </div>
             
             <div class="form-group">
@@ -831,13 +982,87 @@
         let reviewedCount = 0;
         let remainingCards = 0;
         let allCards = [];
+        let currentCardType = 'basic'; // 'basic' o 'cloze'
         
         /**
          * INIZIALIZZAZIONE
          */
         document.addEventListener('DOMContentLoaded', function() {
             loadStats();
+            
+            // Listener per anteprima cloze in tempo reale
+            document.getElementById('newClozeText').addEventListener('input', updateClozePreview);
         });
+        
+        /**
+         * === NUOVO: Funzioni per Cloze ===
+         */
+        
+        // Verifica se un testo è una carta Cloze
+        function isClozeCard(text) {
+            return /\{\{.+?\}\}/.test(text);
+        }
+        
+        // Conta quante cloze ci sono
+        function countClozes(text) {
+            const matches = text.match(/\{\{.+?\}\}/g);
+            return matches ? matches.length : 0;
+        }
+        
+        // Converte testo cloze in versione con blanks (per la domanda)
+        function clozeToQuestion(text) {
+            return text.replace(/\{\{(.+?)\}\}/g, '<span class="cloze-blank">[...]</span>');
+        }
+        
+        // Converte testo cloze in versione con risposte evidenziate
+        function clozeToAnswer(text) {
+            return text.replace(/\{\{(.+?)\}\}/g, '<span class="cloze-revealed">$1</span>');
+        }
+        
+        // Estrae le risposte da un testo cloze
+        function extractClozeAnswers(text) {
+            const matches = text.match(/\{\{(.+?)\}\}/g);
+            if (!matches) return [];
+            return matches.map(m => m.replace(/\{\{|\}\}/g, ''));
+        }
+        
+        // Aggiorna anteprima cloze
+        function updateClozePreview() {
+            const text = document.getElementById('newClozeText').value;
+            const preview = document.getElementById('clozePreview');
+            
+            if (text.trim() === '') {
+                preview.innerHTML = '<span style="color: #888;">L\'anteprima apparirà qui...</span>';
+                return;
+            }
+            
+            const numClozes = countClozes(text);
+            if (numClozes === 0) {
+                preview.innerHTML = '<span style="color: #ff6b6b;">⚠️ Aggiungi almeno una {{parola}} tra doppie graffe</span>';
+                return;
+            }
+            
+            const questionView = clozeToQuestion(text);
+            preview.innerHTML = `
+                <div style="margin-bottom: 10px;"><strong>Domanda:</strong></div>
+                <div style="margin-bottom: 15px;">${questionView}</div>
+                <div style="color: #26de81; font-size: 12px;">✓ ${numClozes} campo/i da ricordare</div>
+            `;
+        }
+        
+        // Cambia tipo carta (basic/cloze)
+        function switchCardType(type) {
+            currentCardType = type;
+            
+            // Aggiorna tabs
+            document.getElementById('tabBasic').classList.toggle('active', type === 'basic');
+            document.getElementById('tabCloze').classList.toggle('active', type === 'cloze');
+            
+            // Mostra/nascondi campi appropriati
+            document.getElementById('basicCardFields').classList.toggle('hidden', type === 'cloze');
+            document.getElementById('clozeCardFields').classList.toggle('hidden', type === 'basic');
+            document.getElementById('clozeHelpBox').classList.toggle('hidden', type === 'basic');
+        }
         
         /**
          * NAVIGAZIONE
@@ -860,9 +1085,16 @@
         function showAddCard() {
             hideAllSections();
             document.getElementById('addCardSection').classList.remove('hidden');
+            
+            // Reset form
             document.getElementById('newQuestion').value = '';
             document.getElementById('newAnswer').value = '';
+            document.getElementById('newClozeText').value = '';
             document.getElementById('newImageUrl').value = '';
+            document.getElementById('clozePreview').innerHTML = '<span style="color: #888;">L\'anteprima apparirà qui...</span>';
+            
+            // Default a carta base
+            switchCardType('basic');
         }
         
         function showManageCards() {
@@ -877,7 +1109,6 @@
             loadDetailedStats();
         }
         
-        // === NUOVO: Funzione per mostrare sezione leeches ===
         function showLeeches() {
             hideAllSections();
             document.getElementById('leechesSection').classList.remove('hidden');
@@ -885,7 +1116,7 @@
         }
         
         /**
-         * STATISTICHE (MODIFICATO: include leeches)
+         * STATISTICHE
          */
         async function loadStats() {
             try {
@@ -897,11 +1128,9 @@
                 document.getElementById('statNew').textContent = data.new || 0;
                 document.getElementById('statEF').textContent = data.avg_ef ? data.avg_ef.toFixed(2) : '2.50';
                 
-                // NUOVO: Mostra leeches
                 const leechCount = data.leeches || 0;
                 document.getElementById('statLeeches').textContent = leechCount;
                 
-                // Nascondi il box leeches se non ce ne sono
                 const leechBox = document.getElementById('statLeechesBox');
                 if (leechCount === 0) {
                     leechBox.style.display = 'none';
@@ -922,34 +1151,37 @@
             }
         }
         
-        // === NUOVO: Carica e mostra le leeches ===
         async function loadLeeches() {
             try {
                 const response = await fetch('/api/leeches.php');
                 const data = await response.json();
                 
                 if (data.leeches && data.leeches.length > 0) {
-                    document.getElementById('leechesList').innerHTML = data.leeches.map(card => `
-                        <div class="card-item leech">
-                            <div class="card-item-header">
-                                <div class="card-item-content">
-                                    <div class="card-item-question">
-                                        ${escapeHtml(card.question)}
-                                        <span class="leech-badge">${card.lapses} fallimenti</span>
+                    document.getElementById('leechesList').innerHTML = data.leeches.map(card => {
+                        const isCloze = isClozeCard(card.question);
+                        return `
+                            <div class="card-item leech ${isCloze ? 'cloze' : ''}">
+                                <div class="card-item-header">
+                                    <div class="card-item-content">
+                                        <div class="card-item-question">
+                                            ${escapeHtml(card.question)}
+                                            <span class="leech-badge">${card.lapses} fallimenti</span>
+                                            ${isCloze ? '<span class="cloze-type-badge">Cloze</span>' : ''}
+                                        </div>
+                                        <div class="card-item-answer">${escapeHtml(card.answer)}</div>
+                                        <div class="card-item-meta">
+                                            ${card.category || 'Senza categoria'} | EF: ${parseFloat(card.easiness_factor).toFixed(2)}
+                                        </div>
                                     </div>
-                                    <div class="card-item-answer">${escapeHtml(card.answer)}</div>
-                                    <div class="card-item-meta">
-                                        ${card.category || 'Senza categoria'} | EF: ${parseFloat(card.easiness_factor).toFixed(2)}
+                                    <div class="card-item-actions">
+                                        <button class="small secondary" onclick="openEditModal(${card.id})">✏️ Modifica</button>
+                                        <button class="small warning" onclick="reactivateLeech(${card.id})">🔄 Riattiva</button>
+                                        <button class="small danger" onclick="deleteLeech(${card.id})">🗑️</button>
                                     </div>
-                                </div>
-                                <div class="card-item-actions">
-                                    <button class="small secondary" onclick="openEditModal(${card.id})">✏️ Modifica</button>
-                                    <button class="small warning" onclick="reactivateLeech(${card.id})">🔄 Riattiva</button>
-                                    <button class="small danger" onclick="deleteLeech(${card.id})">🗑️</button>
                                 </div>
                             </div>
-                        </div>
-                    `).join('');
+                        `;
+                    }).join('');
                 } else {
                     document.getElementById('leechesList').innerHTML = 
                         '<p style="text-align: center; color: #26de81; padding: 30px;">✅ Nessuna carta sospesa! Ottimo lavoro!</p>';
@@ -961,7 +1193,6 @@
             }
         }
         
-        // === NUOVO: Riattiva una leech ===
         async function reactivateLeech(cardId) {
             if (!confirm('Hai modificato/semplificato questa carta? Riattivandola apparirà domani nel ripasso.')) {
                 return;
@@ -989,7 +1220,6 @@
             }
         }
         
-        // === NUOVO: Elimina una leech ===
         async function deleteLeech(cardId) {
             if (!confirm('Eliminare definitivamente questa carta? L\'azione non può essere annullata.')) {
                 return;
@@ -1044,7 +1274,7 @@
                 
                 if (data.problematic_cards && data.problematic_cards.length > 0) {
                     document.getElementById('problematicCardsList').innerHTML = data.problematic_cards
-                        .filter(card => !card.suspended) // Mostra solo quelle non ancora sospese
+                        .filter(card => !card.suspended)
                         .map(card => `
                         <div class="category-item">
                             <div>
@@ -1118,16 +1348,22 @@
                 const ef = parseFloat(card.easiness_factor).toFixed(2);
                 const lapses = card.lapses || 0;
                 const isSuspended = card.suspended == 1;
+                const isCloze = isClozeCard(card.question);
                 const imageHtml = card.image_url ? 
                     `<img src="${card.image_url}" class="card-item-image" onerror="this.style.display='none'">` : '';
                 const leechBadge = isSuspended ? '<span class="leech-badge">🧛 Sospesa</span>' : '';
+                const clozeBadge = isCloze ? '<span class="cloze-type-badge">Cloze</span>' : '';
+                
+                let cardClass = 'card-item';
+                if (isSuspended) cardClass += ' leech';
+                else if (isCloze) cardClass += ' cloze';
                 
                 return `
-                    <div class="card-item ${isSuspended ? 'leech' : ''}">
+                    <div class="${cardClass}">
                         <div class="card-item-header">
                             ${imageHtml}
                             <div class="card-item-content">
-                                <div class="card-item-question">${escapeHtml(card.question)} ${leechBadge}</div>
+                                <div class="card-item-question">${escapeHtml(card.question)} ${leechBadge} ${clozeBadge}</div>
                                 <div class="card-item-answer">${escapeHtml(card.answer)}</div>
                                 <div class="card-item-meta">
                                     ${card.category || 'Senza categoria'} | EF: ${ef} | Fallimenti: ${lapses}
@@ -1209,7 +1445,6 @@
                     showToast('Carta aggiornata! ✅', 'success');
                     closeEditModal();
                     
-                    // Ricarica la sezione attiva
                     if (!document.getElementById('leechesSection').classList.contains('hidden')) {
                         loadLeeches();
                     } else if (!document.getElementById('manageCardsSection').classList.contains('hidden')) {
@@ -1257,7 +1492,7 @@
         }
         
         /**
-         * SESSIONE DI REVIEW (MODIFICATO: gestione leeches)
+         * === MODIFICATO: SESSIONE DI REVIEW con supporto Cloze ===
          */
         async function startReview() {
             reviewedCount = 0;
@@ -1275,11 +1510,30 @@
                     currentCard = data.card;
                     remainingCards = data.remaining_today || 0;
                     
-                    document.getElementById('cardQuestion').textContent = currentCard.question;
-                    document.getElementById('cardAnswer').textContent = currentCard.answer;
+                    const flashcardEl = document.getElementById('flashcard');
+                    const isCloze = isClozeCard(currentCard.question);
+                    
+                    // Aggiorna stile flashcard
+                    flashcardEl.classList.toggle('cloze-card', isCloze);
+                    
+                    // Mostra domanda (con cloze blanks se necessario)
+                    if (isCloze) {
+                        document.getElementById('cardQuestion').innerHTML = clozeToQuestion(currentCard.question);
+                    } else {
+                        document.getElementById('cardQuestion').textContent = currentCard.question;
+                    }
+                    
+                    // Prepara risposta (con cloze evidenziati se necessario)
+                    if (isCloze) {
+                        document.getElementById('cardAnswer').innerHTML = clozeToAnswer(currentCard.question);
+                    } else {
+                        document.getElementById('cardAnswer').textContent = currentCard.answer;
+                    }
+                    
                     document.getElementById('reviewProgress').textContent = 
                         `Carta ${reviewedCount + 1} | Rimangono: ${remainingCards}`;
                     
+                    // Immagine
                     if (currentCard.image_url) {
                         document.getElementById('cardImage').src = currentCard.image_url;
                         document.getElementById('cardImageContainer').classList.remove('hidden');
@@ -1287,14 +1541,19 @@
                         document.getElementById('cardImageContainer').classList.add('hidden');
                     }
                     
+                    // Meta info
                     const lapses = currentCard.lapses || 0;
                     const ef = parseFloat(currentCard.easiness_factor).toFixed(2);
                     let metaHtml = `Categoria: ${currentCard.category || 'Generale'} | EF: ${ef}`;
+                    if (isCloze) {
+                        metaHtml = `🧩 Cloze | ` + metaHtml;
+                    }
                     if (lapses >= 3) {
                         metaHtml += ` | ⚠️ ${lapses}/4 fallimenti`;
                     }
                     document.getElementById('cardMeta').innerHTML = metaHtml;
                     
+                    // Reset UI
                     document.getElementById('cardAnswerSection').classList.add('hidden');
                     document.getElementById('ratingSection').classList.add('hidden');
                     document.getElementById('showAnswerBtn').classList.remove('hidden');
@@ -1330,13 +1589,10 @@
                 if (data.success) {
                     reviewedCount++;
                     
-                    // === NUOVO: Gestione speciale per leeches ===
                     if (data.leech) {
-                        // Carta diventata leech - notifica prominente
                         showToast(data.warning, 'leech');
-                        setTimeout(() => loadNextCard(), 2000); // Più tempo per leggere
+                        setTimeout(() => loadNextCard(), 2000);
                     } else if (data.warning) {
-                        // Avviso carta a rischio
                         showToast(data.warning, 'warning');
                         setTimeout(() => loadNextCard(), 1200);
                     } else {
@@ -1371,17 +1627,42 @@
         }
         
         /**
-         * AGGIUNTA CARTE
+         * === MODIFICATO: AGGIUNTA CARTE con supporto Cloze ===
          */
         async function saveCard() {
             const category = document.getElementById('newCategory').value;
-            const question = document.getElementById('newQuestion').value.trim();
-            const answer = document.getElementById('newAnswer').value.trim();
             const imageUrl = document.getElementById('newImageUrl').value.trim();
             
-            if (!question || !answer) {
-                showToast('Compila domanda e risposta!', 'error');
-                return;
+            let question, answer;
+            
+            if (currentCardType === 'cloze') {
+                // Carta Cloze
+                const clozeText = document.getElementById('newClozeText').value.trim();
+                
+                if (!clozeText) {
+                    showToast('Inserisci il testo cloze!', 'error');
+                    return;
+                }
+                
+                if (!isClozeCard(clozeText)) {
+                    showToast('Aggiungi almeno una {{parola}} tra doppie graffe!', 'error');
+                    return;
+                }
+                
+                question = clozeText;
+                // La risposta per le cloze è l'elenco delle parole nascoste
+                const answers = extractClozeAnswers(clozeText);
+                answer = answers.join(', ');
+                
+            } else {
+                // Carta Base
+                question = document.getElementById('newQuestion').value.trim();
+                answer = document.getElementById('newAnswer').value.trim();
+                
+                if (!question || !answer) {
+                    showToast('Compila domanda e risposta!', 'error');
+                    return;
+                }
             }
             
             try {
@@ -1392,7 +1673,8 @@
                 });
                 
                 if (response.ok) {
-                    showToast('Carta salvata! ✅', 'success');
+                    const cardTypeLabel = currentCardType === 'cloze' ? 'Cloze' : 'Base';
+                    showToast(`Carta ${cardTypeLabel} salvata! ✅`, 'success');
                     showMenu();
                 } else {
                     showToast('Errore nel salvataggio', 'error');
@@ -1412,7 +1694,6 @@
             toast.textContent = message;
             toast.className = 'toast show ' + type;
             
-            // Durata più lunga per messaggi leech
             const duration = type === 'leech' ? 5000 : 3000;
             
             setTimeout(() => {
