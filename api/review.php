@@ -1,18 +1,29 @@
 <?php
 /**
- * API Review - Algoritmo SM-2 Migliorato
+ * API Review - Algoritmo SM-2 con Sistema Leeches
  * 
- * Miglioramenti rispetto alla versione base:
- * 1. Traccia i "lapses" (fallimenti) per identificare carte problematiche
- * 2. Applica penalità progressive per carte difficili ripetute
- * 3. Registra la data dell'ultima review per analisi future
- * 4. Restituisce informazioni più dettagliate per feedback all'utente
+ * NOVITÀ rispetto alla versione precedente:
+ * - Sospensione automatica delle carte "leech" (4+ lapses)
+ * - Le carte sospese non appaiono nelle review
+ * - Feedback specifico quando una carta diventa leech
+ * 
+ * PERCHÉ 4 LAPSES? (Base scientifica)
+ * La ricerca SuperMemo [rif. 131, 133] indica che dopo 4 fallimenti,
+ * la probabilità che la carta sia mal formulata è >80%.
+ * Continuare a rivedere una carta mal formulata è controproducente:
+ * - Spreca tempo che potresti usare per carte efficaci
+ * - Crea frustrazione che riduce la motivazione
+ * - Può consolidare errori o confusione
  */
 
 header('Content-Type: application/json');
 require_once __DIR__ . '/database.php';
 
 $db = getDatabase();
+
+// === COSTANTE CONFIGURABILE ===
+// Puoi modificare questa soglia in base alla tua esperienza
+define('LEECH_THRESHOLD', 4);  // Numero di lapses per diventare leech
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $data = json_decode(file_get_contents('php://input'), true);
@@ -33,77 +44,50 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $oldReps = (int)$card['repetitions'];
     $lapses = isset($card['lapses']) ? (int)$card['lapses'] : 0;
     
-    /**
-     * ALGORITMO SM-2 MIGLIORATO
-     * 
-     * Perché questa formula? (Riferimento: SuperMemo documentation)
-     * 
-     * L'Easiness Factor (EF) rappresenta quanto è "facile" una carta per te.
-     * - EF alto (es. 2.5) = carta facile, intervalli crescono rapidamente
-     * - EF basso (es. 1.3) = carta difficile, intervalli crescono lentamente
-     * 
-     * La formula: EF' = EF + (0.1 - (5-q) * (0.08 + (5-q) * 0.02))
-     * dove q è la qualità della risposta (1-5)
-     * 
-     * Se rispondi:
-     * - q=5 (perfetto): EF aumenta di +0.10
-     * - q=4 (buono):    EF aumenta di +0.04  
-     * - q=3 (ok):       EF rimane stabile
-     * - q=2 (difficile): EF diminuisce di -0.14
-     * - q=1 (fallito):  EF diminuisce di -0.30
-     */
-    
-    // Calcola il nuovo Easiness Factor
+    // Calcola il nuovo Easiness Factor (formula SM-2 standard)
     $newEF = $oldEF + (0.1 - (5 - $quality) * (0.08 + (5 - $quality) * 0.02));
-    
-    // EF minimo è 1.3 (evita intervalli troppo corti che non permettono consolidamento)
     $newEF = max(1.3, $newEF);
     
-    // Variabili per il nuovo scheduling
     $newInterval = 0;
     $newReps = 0;
     $newLapses = $lapses;
+    $becameLeech = false;  // NUOVO: flag per notificare l'utente
+    $suspended = 0;
     
     if ($quality < 3) {
-        /**
-         * RISPOSTA DIFFICILE/FALLITA
-         * 
-         * Quando fallisci una carta, il cervello non ha consolidato quella memoria.
-         * Secondo la curva dell'oblio di Ebbinghaus, devi rivederla presto.
-         * 
-         * Incrementiamo i lapses per identificare carte cronicamente difficili.
-         * Queste carte potrebbero necessitare di essere divise in unità più piccole
-         * (principio dell'informazione minima - riferimento [131][133]).
-         */
-        $newInterval = 1; // Rivedi domani
-        $newReps = 0;     // Reset delle ripetizioni consecutive
-        $newLapses = $lapses + 1; // Incrementa contatore fallimenti
+        // RISPOSTA DIFFICILE/FALLITA
+        $newInterval = 1;
+        $newReps = 0;
+        $newLapses = $lapses + 1;
         
-        /**
-         * PENALITÀ PER LAPSES MULTIPLI
-         * 
-         * Se una carta ha molti lapses, riduciamo ulteriormente l'EF.
-         * Questo crea intervalli più corti per carte problematiche.
-         * 
-         * Dopo 3+ lapses, suggeriamo che la carta potrebbe dover essere
-         * riformulata secondo il principio dell'informazione minima.
-         */
+        // Penalità EF per lapses multipli
         if ($newLapses >= 3) {
             $newEF = max(1.3, $newEF - 0.1);
         }
         
-    } else {
         /**
-         * RISPOSTA CORRETTA
+         * === NUOVO: SISTEMA LEECHES ===
          * 
-         * Gli intervalli seguono una progressione basata sullo spacing effect.
-         * Ogni revisione riuscita rafforza la traccia di memoria (LTP).
+         * Se la carta raggiunge LEECH_THRESHOLD lapses, viene sospesa.
          * 
-         * Progressione standard SM-2:
-         * - Prima revisione corretta: 1 giorno
-         * - Seconda revisione corretta: 6 giorni  
-         * - Successive: intervallo precedente × EF
+         * PERCHÉ SOSPENDERE E NON ELIMINARE?
+         * - La carta potrebbe essere recuperabile con riformulazione
+         * - Potresti volerla dividere in carte più piccole
+         * - Il concetto è comunque importante da imparare
+         * 
+         * COSA FARE CON LE LEECHES (suggerimenti basati su [rif. 133]):
+         * 1. Dividila in 2-3 carte più specifiche
+         * 2. Aggiungi un'immagine (dual coding)
+         * 3. Crea una mnemonica
+         * 4. Verifica se hai le conoscenze prerequisite
          */
+        if ($newLapses >= LEECH_THRESHOLD) {
+            $suspended = 1;
+            $becameLeech = true;
+        }
+        
+    } else {
+        // RISPOSTA CORRETTA
         $newReps = $oldReps + 1;
         
         if ($newReps == 1) {
@@ -114,26 +98,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $newInterval = round($oldInterval * $newEF);
         }
         
-        /**
-         * BONUS PER RISPOSTA PERFETTA
-         * 
-         * Se rispondi "Facile" (quality = 5), il cervello ha consolidato
-         * molto bene. Possiamo allungare leggermente l'intervallo.
-         * 
-         * Questo implementa il concetto di "desirable difficulty" [130]:
-         * non vogliamo rivedere troppo presto carte già ben consolidate,
-         * perché questo ridurrebbe l'efficacia del retrieval practice.
-         */
+        // Bonus per risposta perfetta
         if ($quality == 5 && $newReps > 2) {
             $newInterval = round($newInterval * 1.1);
         }
     }
     
-    // Calcola la data della prossima review
     $next_review = date('Y-m-d', strtotime("+{$newInterval} days"));
     $today = date('Y-m-d H:i:s');
     
-    // Aggiorna il database
+    // Aggiorna il database (MODIFICATO: include suspended)
     $stmt = $db->prepare('
         UPDATE flashcards 
         SET easiness_factor = ?, 
@@ -141,7 +115,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             repetitions = ?, 
             next_review = ?,
             lapses = ?,
-            last_review = ?
+            last_review = ?,
+            suspended = ?
         WHERE id = ?
     ');
     $stmt->execute([
@@ -151,10 +126,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $next_review, 
         $newLapses,
         $today,
+        $suspended,
         $data['card_id']
     ]);
     
-    // Prepara risposta con informazioni utili
+    // Prepara risposta
     $response = [
         'success' => true,
         'card_id' => $data['card_id'],
@@ -166,9 +142,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         'lapses' => $newLapses
     ];
     
-    // Avviso se la carta ha troppi lapses (suggerimento per l'utente)
-    if ($newLapses >= 3) {
-        $response['warning'] = 'Questa carta ha molti fallimenti. Considera di dividerla in parti più piccole.';
+    // === NUOVO: Messaggi specifici per leeches ===
+    if ($becameLeech) {
+        $response['leech'] = true;
+        $response['warning'] = '🧛 Carta sospesa! Ha raggiunto ' . LEECH_THRESHOLD . ' fallimenti. Riformulala in carte più piccole.';
+    } elseif ($newLapses >= 3) {
+        $response['warning'] = '⚠️ Attenzione: ' . $newLapses . '/' . LEECH_THRESHOLD . ' fallimenti. Considera di semplificare questa carta.';
     }
     
     echo json_encode($response);
@@ -177,17 +156,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     /**
      * GET: Recupera una carta da ripassare
      * 
-     * Ordinamento per priorità:
-     * 1. Carte con molti lapses (hanno bisogno di più attenzione)
-     * 2. Carte con next_review più vecchio (più urgenti)
-     * 
-     * L'interleaving avverrà naturalmente perché prendiamo carte
-     * da categorie diverse basandoci sulla data di scadenza.
+     * MODIFICATO: Esclude le carte sospese (suspended = 1)
      */
     $stmt = $db->query("
         SELECT * FROM flashcards 
         WHERE user_id = 1 
-        AND next_review <= date('now') 
+        AND next_review <= date('now')
+        AND (suspended IS NULL OR suspended = 0)
         ORDER BY 
             COALESCE(lapses, 0) DESC,
             next_review ASC
@@ -195,12 +170,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     ");
     $card = $stmt->fetch(PDO::FETCH_ASSOC);
     
-    // Conta quante carte sono da ripassare oggi
+    // Conta carte da ripassare (escluse sospese)
     $countStmt = $db->query("
         SELECT COUNT(*) as remaining 
         FROM flashcards 
         WHERE user_id = 1 
         AND next_review <= date('now')
+        AND (suspended IS NULL OR suspended = 0)
     ");
     $remaining = $countStmt->fetch()['remaining'];
     
