@@ -32,11 +32,61 @@
         .subtitle {
             text-align: center;
             color: #666;
-            margin-bottom: 30px;
+            margin-bottom: 20px;
             font-size: 14px;
         }
         
-        /* === NUOVO: Streak Banner === */
+        /* === USER SWITCHER === */
+        .user-switcher {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 20px;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 12px;
+        }
+        
+        .user-btn {
+            padding: 10px 20px;
+            border: 2px solid #e0e0e0;
+            border-radius: 25px;
+            background: white;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .user-btn:hover {
+            border-color: #667eea;
+            background: #f0f4ff;
+        }
+        
+        .user-btn.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-color: transparent;
+        }
+        
+        .user-avatar {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: #e0e5ff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+        }
+        
+        .user-btn.active .user-avatar {
+            background: rgba(255,255,255,0.3);
+        }
+        
+        /* === Streak Banner === */
         .streak-banner {
             background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
             color: white;
@@ -56,41 +106,16 @@
             gap: 15px;
         }
         
-        .streak-fire {
-            font-size: 40px;
-        }
+        .streak-fire { font-size: 40px; }
+        .streak-info h2 { font-size: 24px; margin: 0; }
+        .streak-info p { font-size: 13px; opacity: 0.9; margin: 0; }
         
-        .streak-info h2 {
-            font-size: 24px;
-            margin: 0;
-        }
+        .streak-stats { display: flex; gap: 20px; }
+        .streak-stat { text-align: center; }
+        .streak-stat-value { font-size: 20px; font-weight: bold; }
+        .streak-stat-label { font-size: 11px; opacity: 0.9; }
         
-        .streak-info p {
-            font-size: 13px;
-            opacity: 0.9;
-            margin: 0;
-        }
-        
-        .streak-stats {
-            display: flex;
-            gap: 20px;
-        }
-        
-        .streak-stat {
-            text-align: center;
-        }
-        
-        .streak-stat-value {
-            font-size: 20px;
-            font-weight: bold;
-        }
-        
-        .streak-stat-label {
-            font-size: 11px;
-            opacity: 0.9;
-        }
-        
-        /* === NUOVO: Progress bar obiettivo === */
+        /* === Daily Goal Progress === */
         .daily-goal-section {
             background: #f8f9fa;
             border-radius: 10px;
@@ -105,16 +130,8 @@
             margin-bottom: 10px;
         }
         
-        .daily-goal-header h4 {
-            color: #667eea;
-            margin: 0;
-            font-size: 14px;
-        }
-        
-        .daily-goal-count {
-            font-size: 14px;
-            color: #666;
-        }
+        .daily-goal-header h4 { color: #667eea; margin: 0; font-size: 14px; }
+        .daily-goal-count { font-size: 14px; color: #666; }
         
         .progress-bar {
             height: 12px;
@@ -134,7 +151,7 @@
             background: linear-gradient(90deg, #26de81, #20c770);
         }
         
-        /* Dashboard delle statistiche */
+        /* Dashboard statistiche */
         .stats-dashboard {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
@@ -150,15 +167,8 @@
             text-align: center;
         }
         
-        .stat-box .number {
-            font-size: 28px;
-            font-weight: bold;
-        }
-        
-        .stat-box .label {
-            font-size: 12px;
-            opacity: 0.9;
-        }
+        .stat-box .number { font-size: 28px; font-weight: bold; }
+        .stat-box .label { font-size: 12px; opacity: 0.9; }
         
         .stat-box.leeches {
             background: linear-gradient(135deg, #ff6b6b 0%, #ee5a5a 100%);
@@ -166,9 +176,7 @@
             transition: transform 0.2s;
         }
         
-        .stat-box.leeches:hover {
-            transform: scale(1.05);
-        }
+        .stat-box.leeches:hover { transform: scale(1.05); }
         
         /* Insights box */
         .insights-box {
@@ -180,16 +188,8 @@
             font-size: 14px;
         }
         
-        .insights-box h3 {
-            color: #667eea;
-            margin-bottom: 10px;
-            font-size: 14px;
-        }
-        
-        .insight-item {
-            margin: 8px 0;
-            color: #444;
-        }
+        .insights-box h3 { color: #667eea; margin-bottom: 10px; font-size: 14px; }
+        .insight-item { margin: 8px 0; color: #444; }
         
         /* Menu buttons */
         .menu-buttons {
@@ -214,41 +214,14 @@
             gap: 8px;
         }
         
-        button:hover { 
-            background: #5568d3; 
-            transform: translateY(-2px); 
-        }
-        
-        button.secondary {
-            background: #e0e5ff;
-            color: #667eea;
-        }
-        
-        button.secondary:hover {
-            background: #c7d0ff;
-        }
-        
-        button.danger {
-            background: #ff6b6b;
-        }
-        
-        button.danger:hover {
-            background: #ee5a5a;
-        }
-        
-        button.warning {
-            background: #feca57;
-            color: #333;
-        }
-        
-        button.warning:hover {
-            background: #feb940;
-        }
-        
-        button.small {
-            padding: 8px 16px;
-            font-size: 13px;
-        }
+        button:hover { background: #5568d3; transform: translateY(-2px); }
+        button.secondary { background: #e0e5ff; color: #667eea; }
+        button.secondary:hover { background: #c7d0ff; }
+        button.danger { background: #ff6b6b; }
+        button.danger:hover { background: #ee5a5a; }
+        button.warning { background: #feca57; color: #333; }
+        button.warning:hover { background: #feb940; }
+        button.small { padding: 8px 16px; font-size: 13px; }
         
         /* Flashcard per review */
         .flashcard {
@@ -260,16 +233,8 @@
             min-height: 200px;
         }
         
-        .flashcard.cloze-card {
-            border-left-color: #9b59b6;
-        }
-        
-        .flashcard-question {
-            font-size: 18px;
-            color: #333;
-            margin-bottom: 20px;
-            line-height: 1.6;
-        }
+        .flashcard.cloze-card { border-left-color: #9b59b6; }
+        .flashcard-question { font-size: 18px; color: #333; margin-bottom: 20px; line-height: 1.6; }
         
         .flashcard-answer {
             font-size: 16px;
@@ -335,12 +300,7 @@
             margin-top: 20px;
         }
         
-        .rating-btn {
-            padding: 15px 25px;
-            border-radius: 12px;
-            font-weight: bold;
-        }
-        
+        .rating-btn { padding: 15px 25px; border-radius: 12px; font-weight: bold; }
         .rating-btn.hard { background: #ff6b6b; }
         .rating-btn.hard:hover { background: #ee5a5a; }
         .rating-btn.good { background: #feca57; color: #333; }
@@ -351,14 +311,9 @@
         /* Form styles */
         .form-section { margin: 20px 0; }
         .form-group { margin-bottom: 15px; }
-        .form-group label {
-            display: block;
-            margin-bottom: 5px;
-            font-weight: 600;
-            color: #444;
-        }
+        .form-group label { display: block; margin-bottom: 5px; font-weight: 600; color: #444; }
         
-        input[type="text"], textarea, select {
+        input[type="text"], textarea, select, input[type="file"] {
             width: 100%;
             padding: 12px;
             border: 2px solid #e0e0e0;
@@ -367,12 +322,68 @@
             transition: border-color 0.3s;
         }
         
-        input[type="text"]:focus, textarea:focus, select:focus {
-            outline: none;
-            border-color: #667eea;
+        input[type="text"]:focus, textarea:focus, select:focus { outline: none; border-color: #667eea; }
+        textarea { min-height: 100px; resize: vertical; }
+        
+        /* === IMAGE UPLOAD STYLES === */
+        .image-upload-section {
+            border: 2px dashed #e0e0e0;
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+            transition: all 0.3s;
+            margin-bottom: 15px;
         }
         
-        textarea { min-height: 100px; resize: vertical; }
+        .image-upload-section:hover {
+            border-color: #667eea;
+            background: #f8f9ff;
+        }
+        
+        .image-upload-section.dragover {
+            border-color: #667eea;
+            background: #e8ebff;
+        }
+        
+        .upload-icon { font-size: 40px; margin-bottom: 10px; }
+        .upload-text { color: #666; font-size: 14px; margin-bottom: 10px; }
+        .upload-or { color: #999; font-size: 12px; margin: 10px 0; }
+        
+        .image-preview-container {
+            position: relative;
+            display: inline-block;
+            margin-top: 10px;
+        }
+        
+        .image-preview {
+            max-width: 200px;
+            max-height: 150px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        
+        .remove-image-btn {
+            position: absolute;
+            top: -10px;
+            right: -10px;
+            background: #ff6b6b;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            font-size: 16px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0;
+        }
+        
+        .remove-image-btn:hover {
+            background: #ee5a5a;
+            transform: none;
+        }
         
         /* Cloze help box */
         .cloze-help-box {
@@ -385,26 +396,11 @@
         }
         
         .cloze-help-box h4 { color: #9b59b6; margin-bottom: 8px; }
-        .cloze-help-box code {
-            background: #e8d5f5;
-            padding: 2px 6px;
-            border-radius: 4px;
-            font-family: monospace;
-        }
-        .cloze-help-box .example {
-            background: white;
-            padding: 10px;
-            border-radius: 6px;
-            margin-top: 10px;
-            border-left: 3px solid #9b59b6;
-        }
+        .cloze-help-box code { background: #e8d5f5; padding: 2px 6px; border-radius: 4px; font-family: monospace; }
+        .cloze-help-box .example { background: white; padding: 10px; border-radius: 6px; margin-top: 10px; border-left: 3px solid #9b59b6; }
         
         /* Card type tabs */
-        .card-type-tabs {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 20px;
-        }
+        .card-type-tabs { display: flex; gap: 10px; margin-bottom: 20px; }
         
         .card-type-tab {
             padding: 10px 20px;
@@ -417,18 +413,12 @@
         }
         
         .card-type-tab:hover { border-color: #667eea; }
-        .card-type-tab.active {
-            background: #667eea;
-            color: white;
-            border-color: #667eea;
-        }
-        .card-type-tab.active.cloze {
-            background: #9b59b6;
-            border-color: #9b59b6;
-        }
+        .card-type-tab.active { background: #667eea; color: white; border-color: #667eea; }
+        .card-type-tab.active.cloze { background: #9b59b6; border-color: #9b59b6; }
         
         /* Cards list */
         .cards-list { margin-top: 20px; }
+        
         .card-item {
             background: #f8f9fa;
             border-radius: 10px;
@@ -436,57 +426,26 @@
             margin-bottom: 12px;
             border-left: 4px solid #667eea;
         }
-        .card-item.leech {
-            border-left-color: #ff6b6b;
-            background: #fff5f5;
-        }
+        
+        .card-item.leech { border-left-color: #ff6b6b; background: #fff5f5; }
         .card-item.cloze { border-left-color: #9b59b6; }
         
-        .card-item-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            gap: 15px;
-        }
+        .card-item-header { display: flex; justify-content: space-between; align-items: flex-start; gap: 15px; }
         .card-item-content { flex: 1; }
-        .card-item-question {
-            font-weight: 600;
-            color: #333;
-            margin-bottom: 5px;
-        }
-        .card-item-answer {
-            font-size: 13px;
-            color: #666;
-            margin-bottom: 8px;
-            max-height: 60px;
-            overflow: hidden;
-        }
+        .card-item-question { font-weight: 600; color: #333; margin-bottom: 5px; }
+        .card-item-answer { font-size: 13px; color: #666; margin-bottom: 8px; max-height: 60px; overflow: hidden; }
         .card-item-meta { font-size: 11px; color: #888; }
-        .card-item-actions {
-            display: flex;
-            gap: 8px;
-            flex-shrink: 0;
-        }
-        .card-item-image {
-            max-width: 80px;
-            max-height: 60px;
-            border-radius: 5px;
-            margin-right: 10px;
-        }
+        .card-item-actions { display: flex; gap: 8px; flex-shrink: 0; }
+        .card-item-image { max-width: 80px; max-height: 60px; border-radius: 5px; margin-right: 10px; }
         
         /* Filter bar */
-        .filter-bar {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 20px;
-            flex-wrap: wrap;
-            align-items: center;
-        }
+        .filter-bar { display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; align-items: center; }
         .filter-bar select { width: auto; min-width: 200px; }
         .filter-bar input { flex: 1; min-width: 200px; }
         
         /* Category stats */
         .category-stats { margin-top: 20px; }
+        
         .category-item {
             display: flex;
             justify-content: space-between;
@@ -496,14 +455,10 @@
             border-radius: 8px;
             margin-bottom: 8px;
         }
+        
         .category-name { font-weight: 600; color: #333; }
         .category-stats-mini { font-size: 12px; color: #666; }
-        .category-ef {
-            padding: 4px 10px;
-            border-radius: 20px;
-            font-size: 12px;
-            font-weight: bold;
-        }
+        .category-ef { padding: 4px 10px; border-radius: 20px; font-size: 12px; font-weight: bold; }
         .ef-high { background: #d4edda; color: #155724; }
         .ef-medium { background: #fff3cd; color: #856404; }
         .ef-low { background: #f8d7da; color: #721c24; }
@@ -516,12 +471,9 @@
             padding: 20px;
             margin-bottom: 25px;
         }
+        
         .leech-info-box h3 { color: #ff6b6b; margin-bottom: 10px; }
-        .leech-info-box ul {
-            margin-left: 20px;
-            color: #666;
-            font-size: 14px;
-        }
+        .leech-info-box ul { margin-left: 20px; color: #666; font-size: 14px; }
         .leech-info-box li { margin: 5px 0; }
         
         /* Modal */
@@ -536,7 +488,9 @@
             align-items: center;
             padding: 20px;
         }
+        
         .modal.show { display: flex; }
+        
         .modal-content {
             background: white;
             border-radius: 15px;
@@ -546,13 +500,10 @@
             max-height: 90vh;
             overflow-y: auto;
         }
-        .modal-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-        }
+        
+        .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
         .modal-header h2 { color: #667eea; margin: 0; }
+        
         .modal-close {
             background: none;
             border: none;
@@ -561,11 +512,8 @@
             color: #888;
             padding: 0;
         }
-        .modal-close:hover {
-            color: #333;
-            background: none;
-            transform: none;
-        }
+        
+        .modal-close:hover { color: #333; background: none; transform: none; }
         
         /* Toast */
         .toast {
@@ -582,6 +530,7 @@
             z-index: 2000;
             max-width: 350px;
         }
+        
         .toast.show { opacity: 1; transform: translateY(0); }
         .toast.success { background: #26de81; }
         .toast.warning { background: #feca57; color: #333; }
@@ -605,17 +554,6 @@
             margin-left: 8px;
         }
         
-        /* === NUOVO: Celebration animation === */
-        @keyframes celebrate {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.1); }
-            100% { transform: scale(1); }
-        }
-        
-        .celebrate {
-            animation: celebrate 0.5s ease-in-out;
-        }
-        
         /* Responsive */
         @media (max-width: 600px) {
             .container { padding: 20px; }
@@ -629,6 +567,7 @@
             .card-type-tabs { flex-direction: column; }
             .streak-banner { flex-direction: column; text-align: center; }
             .streak-stats { justify-content: center; }
+            .user-switcher { flex-wrap: wrap; }
         }
     </style>
 </head>
@@ -637,7 +576,12 @@
         <h1>🧠 NeuroOral Pro</h1>
         <p class="subtitle">Sistema di Ripetizione Spaziata per Neurologia</p>
         
-        <!-- === NUOVO: Streak Banner === -->
+        <!-- === USER SWITCHER === -->
+        <div class="user-switcher" id="userSwitcher">
+            <!-- Popolato dinamicamente -->
+        </div>
+        
+        <!-- === Streak Banner === -->
         <div class="streak-banner" id="streakBanner">
             <div class="streak-main">
                 <div class="streak-fire" id="streakEmoji">🔥</div>
@@ -658,7 +602,7 @@
             </div>
         </div>
         
-        <!-- === NUOVO: Daily Goal Progress === -->
+        <!-- === Daily Goal Progress === -->
         <div class="daily-goal-section" id="dailyGoalSection">
             <div class="daily-goal-header">
                 <h4>🎯 Obiettivo Giornaliero</h4>
@@ -702,18 +646,10 @@
         <!-- Menu principale -->
         <div id="menuSection">
             <div class="menu-buttons">
-                <button onclick="startReview()">
-                    📚 Inizia Ripasso
-                </button>
-                <button onclick="showAddCard()" class="secondary">
-                    ➕ Aggiungi Carta
-                </button>
-                <button onclick="showManageCards()" class="secondary">
-                    ✏️ Gestisci Carte
-                </button>
-                <button onclick="showCategoryStats()" class="secondary">
-                    📊 Statistiche
-                </button>
+                <button onclick="startReview()">📚 Inizia Ripasso</button>
+                <button onclick="showAddCard()" class="secondary">➕ Aggiungi Carta</button>
+                <button onclick="showManageCards()" class="secondary">✏️ Gestisci Carte</button>
+                <button onclick="showCategoryStats()" class="secondary">📊 Statistiche</button>
             </div>
         </div>
         
@@ -735,9 +671,7 @@
             </div>
             
             <div class="text-center">
-                <button id="showAnswerBtn" onclick="showAnswer()">
-                    👁️ Mostra Risposta
-                </button>
+                <button id="showAnswerBtn" onclick="showAnswer()">👁️ Mostra Risposta</button>
                 
                 <div id="ratingSection" class="hidden">
                     <p class="mb-20" style="color: #666;">Come hai risposto?</p>
@@ -816,8 +750,32 @@
                     </div>
                 </div>
                 
+                <!-- === IMAGE UPLOAD SECTION === -->
                 <div class="form-group">
-                    <label for="newImageUrl">URL Immagine (opzionale)</label>
+                    <label>Immagine (opzionale)</label>
+                    <div class="image-upload-section" id="imageUploadSection" 
+                         ondragover="handleDragOver(event)" 
+                         ondragleave="handleDragLeave(event)" 
+                         ondrop="handleDrop(event)">
+                        <div class="upload-icon">📷</div>
+                        <div class="upload-text">Trascina un'immagine qui</div>
+                        <div class="upload-or">oppure</div>
+                        <input type="file" id="newImageFile" accept="image/*" onchange="handleFileSelect(event)" style="display: none;">
+                        <button type="button" class="secondary small" onclick="document.getElementById('newImageFile').click()">
+                            📁 Scegli file
+                        </button>
+                        <div id="newImagePreview" class="hidden">
+                            <div class="image-preview-container">
+                                <img id="newImagePreviewImg" class="image-preview" src="">
+                                <button type="button" class="remove-image-btn" onclick="removeNewImage()">×</button>
+                            </div>
+                        </div>
+                    </div>
+                    <input type="hidden" id="newImagePath" value="">
+                </div>
+                
+                <div class="form-group">
+                    <label for="newImageUrl">...oppure URL Immagine esterna</label>
                     <input type="text" id="newImageUrl" placeholder="https://esempio.com/immagine.jpg">
                 </div>
             </div>
@@ -888,6 +846,7 @@
                 <button class="modal-close" onclick="closeEditModal()">×</button>
             </div>
             <input type="hidden" id="editCardId">
+            <input type="hidden" id="editImagePath">
             <div class="form-group">
                 <label for="editCategory">Categoria</label>
                 <select id="editCategory">
@@ -914,13 +873,35 @@
                 <label for="editAnswer">Risposta</label>
                 <textarea id="editAnswer" rows="6"></textarea>
             </div>
+            
+            <!-- Image Upload in Modal -->
             <div class="form-group">
-                <label for="editImageUrl">URL Immagine</label>
+                <label>Immagine</label>
+                <div class="image-upload-section" id="editImageUploadSection"
+                     ondragover="handleDragOver(event, 'edit')" 
+                     ondragleave="handleDragLeave(event, 'edit')" 
+                     ondrop="handleDrop(event, 'edit')">
+                    <div class="upload-icon">📷</div>
+                    <div class="upload-text">Trascina un'immagine qui</div>
+                    <div class="upload-or">oppure</div>
+                    <input type="file" id="editImageFile" accept="image/*" onchange="handleFileSelect(event, 'edit')" style="display: none;">
+                    <button type="button" class="secondary small" onclick="document.getElementById('editImageFile').click()">
+                        📁 Scegli file
+                    </button>
+                    <div id="editImagePreview" class="hidden">
+                        <div class="image-preview-container">
+                            <img id="editImagePreviewImg" class="image-preview" src="">
+                            <button type="button" class="remove-image-btn" onclick="removeEditImage()">×</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label for="editImageUrl">...oppure URL Immagine esterna</label>
                 <input type="text" id="editImageUrl">
             </div>
-            <div id="editImagePreview" class="hidden" style="margin-bottom: 15px;">
-                <img id="editImagePreviewImg" style="max-width: 200px; border-radius: 8px;">
-            </div>
+            
             <div class="menu-buttons">
                 <button onclick="saveEditCard()">💾 Salva</button>
                 <button onclick="closeEditModal()" class="secondary">Annulla</button>
@@ -938,11 +919,59 @@
         let currentCardType = 'basic';
         let dailyGoal = 20;
         let sessionReviewedToday = 0;
+        let currentUserId = 1;
+        let users = [];
         
         document.addEventListener('DOMContentLoaded', function() {
-            loadStats();
+            loadUsers();
             document.getElementById('newClozeText').addEventListener('input', updateClozePreview);
         });
+        
+        // === USER MANAGEMENT ===
+        async function loadUsers() {
+            try {
+                const response = await fetch('/api/auth.php');
+                const data = await response.json();
+                users = data.users || [];
+                currentUserId = data.current_user?.id || 1;
+                renderUserSwitcher();
+                loadStats();
+            } catch (error) {
+                console.error('Errore caricamento utenti:', error);
+                loadStats();
+            }
+        }
+        
+        function renderUserSwitcher() {
+            const container = document.getElementById('userSwitcher');
+            container.innerHTML = users.map(user => `
+                <button class="user-btn ${user.id === currentUserId ? 'active' : ''}" 
+                        onclick="switchUser(${user.id})">
+                    <div class="user-avatar">${user.display_name.charAt(0).toUpperCase()}</div>
+                    ${user.display_name}
+                </button>
+            `).join('');
+        }
+        
+        async function switchUser(userId) {
+            if (userId === currentUserId) return;
+            try {
+                const response = await fetch('/api/auth.php', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ user_id: userId })
+                });
+                const data = await response.json();
+                if (data.success) {
+                    currentUserId = userId;
+                    renderUserSwitcher();
+                    showToast(`Ciao ${data.user.display_name}!`, 'success');
+                    showMenu();
+                }
+            } catch (error) {
+                showToast('Errore cambio utente', 'error');
+            }
+        }
         
         // === CLOZE FUNCTIONS ===
         function isClozeCard(text) { return /\{\{.+?\}\}/.test(text); }
@@ -980,6 +1009,96 @@
             document.getElementById('clozeHelpBox').classList.toggle('hidden', type === 'basic');
         }
         
+        // === IMAGE UPLOAD FUNCTIONS ===
+        function handleDragOver(event, context = 'new') {
+            event.preventDefault();
+            const section = context === 'edit' ? 'editImageUploadSection' : 'imageUploadSection';
+            document.getElementById(section).classList.add('dragover');
+        }
+        
+        function handleDragLeave(event, context = 'new') {
+            event.preventDefault();
+            const section = context === 'edit' ? 'editImageUploadSection' : 'imageUploadSection';
+            document.getElementById(section).classList.remove('dragover');
+        }
+        
+        function handleDrop(event, context = 'new') {
+            event.preventDefault();
+            const section = context === 'edit' ? 'editImageUploadSection' : 'imageUploadSection';
+            document.getElementById(section).classList.remove('dragover');
+            
+            const files = event.dataTransfer.files;
+            if (files.length > 0) {
+                uploadImage(files[0], context);
+            }
+        }
+        
+        function handleFileSelect(event, context = 'new') {
+            const file = event.target.files[0];
+            if (file) {
+                uploadImage(file, context);
+            }
+        }
+        
+        async function uploadImage(file, context = 'new') {
+            // Verifica tipo file
+            if (!file.type.startsWith('image/')) {
+                showToast('Seleziona un\'immagine valida', 'error');
+                return;
+            }
+            
+            // Verifica dimensione (5MB)
+            if (file.size > 5 * 1024 * 1024) {
+                showToast('Immagine troppo grande (max 5MB)', 'error');
+                return;
+            }
+            
+            showToast('Caricamento...', 'info');
+            
+            const formData = new FormData();
+            formData.append('image', file);
+            
+            try {
+                const response = await fetch('/api/upload.php', {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    if (context === 'edit') {
+                        document.getElementById('editImagePath').value = data.image_path;
+                        document.getElementById('editImagePreviewImg').src = data.image_url;
+                        document.getElementById('editImagePreview').classList.remove('hidden');
+                        document.getElementById('editImageUrl').value = '';
+                    } else {
+                        document.getElementById('newImagePath').value = data.image_path;
+                        document.getElementById('newImagePreviewImg').src = data.image_url;
+                        document.getElementById('newImagePreview').classList.remove('hidden');
+                        document.getElementById('newImageUrl').value = '';
+                    }
+                    showToast('Immagine caricata!', 'success');
+                } else {
+                    showToast(data.error || 'Errore upload', 'error');
+                }
+            } catch (error) {
+                showToast('Errore di connessione', 'error');
+            }
+        }
+        
+        function removeNewImage() {
+            document.getElementById('newImagePath').value = '';
+            document.getElementById('newImagePreview').classList.add('hidden');
+            document.getElementById('newImageFile').value = '';
+        }
+        
+        function removeEditImage() {
+            document.getElementById('editImagePath').value = '';
+            document.getElementById('editImagePreview').classList.add('hidden');
+            document.getElementById('editImageFile').value = '';
+        }
+        
         // === NAVIGATION ===
         function showMenu() {
             hideAllSections();
@@ -988,6 +1107,7 @@
             document.getElementById('insightsBox').classList.remove('hidden');
             document.getElementById('streakBanner').classList.remove('hidden');
             document.getElementById('dailyGoalSection').classList.remove('hidden');
+            document.getElementById('userSwitcher').classList.remove('hidden');
             loadStats();
         }
         
@@ -998,6 +1118,7 @@
             });
             document.getElementById('streakBanner').classList.add('hidden');
             document.getElementById('dailyGoalSection').classList.add('hidden');
+            document.getElementById('userSwitcher').classList.add('hidden');
         }
         
         function showAddCard() {
@@ -1007,6 +1128,8 @@
             document.getElementById('newAnswer').value = '';
             document.getElementById('newClozeText').value = '';
             document.getElementById('newImageUrl').value = '';
+            document.getElementById('newImagePath').value = '';
+            document.getElementById('newImagePreview').classList.add('hidden');
             document.getElementById('clozePreview').innerHTML = '<span style="color: #888;">L\'anteprima apparirà qui...</span>';
             switchCardType('basic');
         }
@@ -1029,7 +1152,7 @@
             loadLeeches();
         }
         
-        // === STATS (con streak) ===
+        // === STATS ===
         async function loadStats() {
             try {
                 const response = await fetch('/api/stats.php');
@@ -1044,7 +1167,7 @@
                 document.getElementById('statLeeches').textContent = leechCount;
                 document.getElementById('statLeechesBox').style.display = leechCount === 0 ? 'none' : 'block';
                 
-                // === STREAK ===
+                // Streak
                 if (data.streak) {
                     const streak = data.streak;
                     document.getElementById('streakCount').textContent = streak.current;
@@ -1052,7 +1175,6 @@
                     document.getElementById('totalDays').textContent = streak.total_days;
                     dailyGoal = streak.daily_goal;
                     
-                    // Emoji e messaggio
                     if (streak.current >= 7) {
                         document.getElementById('streakEmoji').textContent = '🔥';
                         document.getElementById('streakMessage').textContent = 'Sei in fuoco! Continua così!';
@@ -1067,7 +1189,6 @@
                         document.getElementById('streakMessage').textContent = 'Studia oggi per iniziare!';
                     }
                     
-                    // Progress bar
                     sessionReviewedToday = data.reviewed_today || 0;
                     document.getElementById('reviewedToday').textContent = sessionReviewedToday;
                     document.getElementById('dailyGoal').textContent = dailyGoal;
@@ -1218,8 +1339,13 @@
                 let cls = 'card-item';
                 if (isSuspended) cls += ' leech';
                 else if (isCloze) cls += ' cloze';
+                
+                const imgHtml = card.effective_image ? 
+                    `<img src="${card.effective_image}" class="card-item-image" alt="">` : '';
+                
                 return `<div class="${cls}">
                     <div class="card-item-header">
+                        ${imgHtml}
                         <div class="card-item-content">
                             <div class="card-item-question">${escapeHtml(card.question)}
                                 ${isSuspended ? '<span class="leech-badge">Sospesa</span>' : ''}
@@ -1248,8 +1374,10 @@
                     document.getElementById('editQuestion').value = data.card.question;
                     document.getElementById('editAnswer').value = data.card.answer;
                     document.getElementById('editImageUrl').value = data.card.image_url || '';
-                    if (data.card.image_url) {
-                        document.getElementById('editImagePreviewImg').src = data.card.image_url;
+                    document.getElementById('editImagePath').value = data.card.image_path || '';
+                    
+                    if (data.card.effective_image) {
+                        document.getElementById('editImagePreviewImg').src = data.card.effective_image;
                         document.getElementById('editImagePreview').classList.remove('hidden');
                     } else {
                         document.getElementById('editImagePreview').classList.add('hidden');
@@ -1267,12 +1395,15 @@
             const question = document.getElementById('editQuestion').value.trim();
             const answer = document.getElementById('editAnswer').value.trim();
             const imageUrl = document.getElementById('editImageUrl').value.trim();
+            const imagePath = document.getElementById('editImagePath').value.trim();
+            
             if (!question || !answer) { showToast('Compila tutti i campi', 'error'); return; }
+            
             try {
                 const response = await fetch('/api/edit.php', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ id, category, question, answer, image_url: imageUrl })
+                    body: JSON.stringify({ id, category, question, answer, image_url: imageUrl, image_path: imagePath })
                 });
                 const data = await response.json();
                 if (data.success) {
@@ -1329,8 +1460,9 @@
                     
                     document.getElementById('reviewProgress').textContent = `Carta ${reviewedCount + 1} | Rimangono: ${remainingCards}`;
                     
-                    if (currentCard.image_url) {
-                        document.getElementById('cardImage').src = currentCard.image_url;
+                    // Use effective_image
+                    if (currentCard.effective_image) {
+                        document.getElementById('cardImage').src = currentCard.effective_image;
                         document.getElementById('cardImageContainer').classList.remove('hidden');
                     } else {
                         document.getElementById('cardImageContainer').classList.add('hidden');
@@ -1395,7 +1527,6 @@
             let title = '🎉 Sessione Completata!';
             let summary = `Hai ripassato ${reviewedCount} carte!`;
             
-            // Celebrazione se obiettivo raggiunto
             if (sessionReviewedToday >= dailyGoal) {
                 title = '🏆 Obiettivo Raggiunto!';
                 summary += ' Obiettivo giornaliero completato!';
@@ -1410,6 +1541,7 @@
         async function saveCard() {
             const category = document.getElementById('newCategory').value;
             const imageUrl = document.getElementById('newImageUrl').value.trim();
+            const imagePath = document.getElementById('newImagePath').value.trim();
             let question, answer;
             
             if (currentCardType === 'cloze') {
@@ -1433,7 +1565,13 @@
                 const response = await fetch('/api/cards.php', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ question, answer, category, image_url: imageUrl || null })
+                    body: JSON.stringify({ 
+                        question, 
+                        answer, 
+                        category, 
+                        image_url: imageUrl || null,
+                        image_path: imagePath || null
+                    })
                 });
                 if (response.ok) {
                     showToast('Salvata!', 'success');
