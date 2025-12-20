@@ -36,6 +36,104 @@
             font-size: 14px;
         }
         
+        /* === NUOVO: Streak Banner === */
+        .streak-banner {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+            padding: 15px 20px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+        
+        .streak-main {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .streak-fire {
+            font-size: 40px;
+        }
+        
+        .streak-info h2 {
+            font-size: 24px;
+            margin: 0;
+        }
+        
+        .streak-info p {
+            font-size: 13px;
+            opacity: 0.9;
+            margin: 0;
+        }
+        
+        .streak-stats {
+            display: flex;
+            gap: 20px;
+        }
+        
+        .streak-stat {
+            text-align: center;
+        }
+        
+        .streak-stat-value {
+            font-size: 20px;
+            font-weight: bold;
+        }
+        
+        .streak-stat-label {
+            font-size: 11px;
+            opacity: 0.9;
+        }
+        
+        /* === NUOVO: Progress bar obiettivo === */
+        .daily-goal-section {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .daily-goal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        
+        .daily-goal-header h4 {
+            color: #667eea;
+            margin: 0;
+            font-size: 14px;
+        }
+        
+        .daily-goal-count {
+            font-size: 14px;
+            color: #666;
+        }
+        
+        .progress-bar {
+            height: 12px;
+            background: #e0e5ff;
+            border-radius: 6px;
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            border-radius: 6px;
+            transition: width 0.5s ease;
+        }
+        
+        .progress-fill.complete {
+            background: linear-gradient(90deg, #26de81, #20c770);
+        }
+        
         /* Dashboard delle statistiche */
         .stats-dashboard {
             display: grid;
@@ -162,7 +260,6 @@
             min-height: 200px;
         }
         
-        /* === NUOVO: Stile per carte Cloze === */
         .flashcard.cloze-card {
             border-left-color: #9b59b6;
         }
@@ -200,7 +297,7 @@
             border-top: 1px solid #ddd;
         }
         
-        /* === NUOVO: Stili per Cloze === */
+        /* Cloze styles */
         .cloze-blank {
             background: #667eea;
             color: white;
@@ -217,13 +314,6 @@
             border-radius: 4px;
             font-weight: bold;
             margin: 0 2px;
-        }
-        
-        .cloze-hint {
-            font-size: 12px;
-            color: #888;
-            margin-top: 10px;
-            font-style: italic;
         }
         
         .cloze-type-badge {
@@ -251,40 +341,16 @@
             font-weight: bold;
         }
         
-        .rating-btn.hard {
-            background: #ff6b6b;
-        }
+        .rating-btn.hard { background: #ff6b6b; }
+        .rating-btn.hard:hover { background: #ee5a5a; }
+        .rating-btn.good { background: #feca57; color: #333; }
+        .rating-btn.good:hover { background: #feb940; }
+        .rating-btn.easy { background: #26de81; }
+        .rating-btn.easy:hover { background: #20c770; }
         
-        .rating-btn.hard:hover {
-            background: #ee5a5a;
-        }
-        
-        .rating-btn.good {
-            background: #feca57;
-            color: #333;
-        }
-        
-        .rating-btn.good:hover {
-            background: #feb940;
-        }
-        
-        .rating-btn.easy {
-            background: #26de81;
-        }
-        
-        .rating-btn.easy:hover {
-            background: #20c770;
-        }
-        
-        /* Form per aggiungere carte */
-        .form-section {
-            margin: 20px 0;
-        }
-        
-        .form-group {
-            margin-bottom: 15px;
-        }
-        
+        /* Form styles */
+        .form-section { margin: 20px 0; }
+        .form-group { margin-bottom: 15px; }
         .form-group label {
             display: block;
             margin-bottom: 5px;
@@ -292,9 +358,7 @@
             color: #444;
         }
         
-        input[type="text"],
-        textarea,
-        select {
+        input[type="text"], textarea, select {
             width: 100%;
             padding: 12px;
             border: 2px solid #e0e0e0;
@@ -303,19 +367,14 @@
             transition: border-color 0.3s;
         }
         
-        input[type="text"]:focus,
-        textarea:focus,
-        select:focus {
+        input[type="text"]:focus, textarea:focus, select:focus {
             outline: none;
             border-color: #667eea;
         }
         
-        textarea { 
-            min-height: 100px; 
-            resize: vertical; 
-        }
+        textarea { min-height: 100px; resize: vertical; }
         
-        /* === NUOVO: Box informativo per Cloze === */
+        /* Cloze help box */
         .cloze-help-box {
             background: #f3e8ff;
             border: 2px solid #9b59b6;
@@ -325,18 +384,13 @@
             font-size: 13px;
         }
         
-        .cloze-help-box h4 {
-            color: #9b59b6;
-            margin-bottom: 8px;
-        }
-        
+        .cloze-help-box h4 { color: #9b59b6; margin-bottom: 8px; }
         .cloze-help-box code {
             background: #e8d5f5;
             padding: 2px 6px;
             border-radius: 4px;
             font-family: monospace;
         }
-        
         .cloze-help-box .example {
             background: white;
             padding: 10px;
@@ -345,7 +399,7 @@
             border-left: 3px solid #9b59b6;
         }
         
-        /* Tab per tipo carta */
+        /* Card type tabs */
         .card-type-tabs {
             display: flex;
             gap: 10px;
@@ -362,26 +416,19 @@
             color: #666;
         }
         
-        .card-type-tab:hover {
-            border-color: #667eea;
-        }
-        
+        .card-type-tab:hover { border-color: #667eea; }
         .card-type-tab.active {
             background: #667eea;
             color: white;
             border-color: #667eea;
         }
-        
         .card-type-tab.active.cloze {
             background: #9b59b6;
             border-color: #9b59b6;
         }
         
-        /* Lista carte per gestione */
-        .cards-list {
-            margin-top: 20px;
-        }
-        
+        /* Cards list */
+        .cards-list { margin-top: 20px; }
         .card-item {
             background: #f8f9fa;
             border-radius: 10px;
@@ -389,16 +436,11 @@
             margin-bottom: 12px;
             border-left: 4px solid #667eea;
         }
-        
         .card-item.leech {
             border-left-color: #ff6b6b;
             background: #fff5f5;
         }
-        
-        /* === NUOVO: Stile per carte cloze nella lista === */
-        .card-item.cloze {
-            border-left-color: #9b59b6;
-        }
+        .card-item.cloze { border-left-color: #9b59b6; }
         
         .card-item-header {
             display: flex;
@@ -406,17 +448,12 @@
             align-items: flex-start;
             gap: 15px;
         }
-        
-        .card-item-content {
-            flex: 1;
-        }
-        
+        .card-item-content { flex: 1; }
         .card-item-question {
             font-weight: 600;
             color: #333;
             margin-bottom: 5px;
         }
-        
         .card-item-answer {
             font-size: 13px;
             color: #666;
@@ -424,18 +461,12 @@
             max-height: 60px;
             overflow: hidden;
         }
-        
-        .card-item-meta {
-            font-size: 11px;
-            color: #888;
-        }
-        
+        .card-item-meta { font-size: 11px; color: #888; }
         .card-item-actions {
             display: flex;
             gap: 8px;
             flex-shrink: 0;
         }
-        
         .card-item-image {
             max-width: 80px;
             max-height: 60px;
@@ -443,7 +474,7 @@
             margin-right: 10px;
         }
         
-        /* Filtro categorie */
+        /* Filter bar */
         .filter-bar {
             display: flex;
             gap: 10px;
@@ -451,22 +482,11 @@
             flex-wrap: wrap;
             align-items: center;
         }
+        .filter-bar select { width: auto; min-width: 200px; }
+        .filter-bar input { flex: 1; min-width: 200px; }
         
-        .filter-bar select {
-            width: auto;
-            min-width: 200px;
-        }
-        
-        .filter-bar input {
-            flex: 1;
-            min-width: 200px;
-        }
-        
-        /* Sezione categorie */
-        .category-stats {
-            margin-top: 20px;
-        }
-        
+        /* Category stats */
+        .category-stats { margin-top: 20px; }
         .category-item {
             display: flex;
             justify-content: space-between;
@@ -476,29 +496,19 @@
             border-radius: 8px;
             margin-bottom: 8px;
         }
-        
-        .category-name {
-            font-weight: 600;
-            color: #333;
-        }
-        
-        .category-stats-mini {
-            font-size: 12px;
-            color: #666;
-        }
-        
+        .category-name { font-weight: 600; color: #333; }
+        .category-stats-mini { font-size: 12px; color: #666; }
         .category-ef {
             padding: 4px 10px;
             border-radius: 20px;
             font-size: 12px;
             font-weight: bold;
         }
-        
         .ef-high { background: #d4edda; color: #155724; }
         .ef-medium { background: #fff3cd; color: #856404; }
         .ef-low { background: #f8d7da; color: #721c24; }
         
-        /* Box informativo leeches */
+        /* Leech info box */
         .leech-info-box {
             background: #fff5f5;
             border: 2px solid #ff6b6b;
@@ -506,41 +516,27 @@
             padding: 20px;
             margin-bottom: 25px;
         }
-        
-        .leech-info-box h3 {
-            color: #ff6b6b;
-            margin-bottom: 10px;
-        }
-        
+        .leech-info-box h3 { color: #ff6b6b; margin-bottom: 10px; }
         .leech-info-box ul {
             margin-left: 20px;
             color: #666;
             font-size: 14px;
         }
-        
-        .leech-info-box li {
-            margin: 5px 0;
-        }
+        .leech-info-box li { margin: 5px 0; }
         
         /* Modal */
         .modal {
             display: none;
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
             background: rgba(0,0,0,0.5);
             z-index: 1000;
             justify-content: center;
             align-items: center;
             padding: 20px;
         }
-        
-        .modal.show {
-            display: flex;
-        }
-        
+        .modal.show { display: flex; }
         .modal-content {
             background: white;
             border-radius: 15px;
@@ -550,19 +546,13 @@
             max-height: 90vh;
             overflow-y: auto;
         }
-        
         .modal-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
             margin-bottom: 20px;
         }
-        
-        .modal-header h2 {
-            color: #667eea;
-            margin: 0;
-        }
-        
+        .modal-header h2 { color: #667eea; margin: 0; }
         .modal-close {
             background: none;
             border: none;
@@ -571,14 +561,13 @@
             color: #888;
             padding: 0;
         }
-        
         .modal-close:hover {
             color: #333;
             background: none;
             transform: none;
         }
         
-        /* Toast notifications */
+        /* Toast */
         .toast {
             position: fixed;
             bottom: 20px;
@@ -593,23 +582,19 @@
             z-index: 2000;
             max-width: 350px;
         }
-        
-        .toast.show {
-            opacity: 1;
-            transform: translateY(0);
-        }
-        
+        .toast.show { opacity: 1; transform: translateY(0); }
         .toast.success { background: #26de81; }
         .toast.warning { background: #feca57; color: #333; }
         .toast.error { background: #ff6b6b; }
         .toast.leech { background: #8b0000; }
+        .toast.celebration { background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); }
         
         /* Utility */
         .hidden { display: none !important; }
         .text-center { text-align: center; }
         .mb-20 { margin-bottom: 20px; }
         
-        /* Badge */
+        /* Badges */
         .leech-badge {
             display: inline-block;
             background: #ff6b6b;
@@ -618,6 +603,17 @@
             border-radius: 10px;
             font-size: 11px;
             margin-left: 8px;
+        }
+        
+        /* === NUOVO: Celebration animation === */
+        @keyframes celebrate {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+        
+        .celebrate {
+            animation: celebrate 0.5s ease-in-out;
         }
         
         /* Responsive */
@@ -631,6 +627,8 @@
             .filter-bar { flex-direction: column; }
             .filter-bar select, .filter-bar input { width: 100%; }
             .card-type-tabs { flex-direction: column; }
+            .streak-banner { flex-direction: column; text-align: center; }
+            .streak-stats { justify-content: center; }
         }
     </style>
 </head>
@@ -638,6 +636,38 @@
     <div class="container">
         <h1>🧠 NeuroOral Pro</h1>
         <p class="subtitle">Sistema di Ripetizione Spaziata per Neurologia</p>
+        
+        <!-- === NUOVO: Streak Banner === -->
+        <div class="streak-banner" id="streakBanner">
+            <div class="streak-main">
+                <div class="streak-fire" id="streakEmoji">🔥</div>
+                <div class="streak-info">
+                    <h2><span id="streakCount">0</span> giorni</h2>
+                    <p id="streakMessage">Inizia a studiare per creare una streak!</p>
+                </div>
+            </div>
+            <div class="streak-stats">
+                <div class="streak-stat">
+                    <div class="streak-stat-value" id="bestStreak">0</div>
+                    <div class="streak-stat-label">Record</div>
+                </div>
+                <div class="streak-stat">
+                    <div class="streak-stat-value" id="totalDays">0</div>
+                    <div class="streak-stat-label">Giorni totali</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- === NUOVO: Daily Goal Progress === -->
+        <div class="daily-goal-section" id="dailyGoalSection">
+            <div class="daily-goal-header">
+                <h4>🎯 Obiettivo Giornaliero</h4>
+                <span class="daily-goal-count"><span id="reviewedToday">0</span> / <span id="dailyGoal">20</span> carte</span>
+            </div>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill" style="width: 0%"></div>
+            </div>
+        </div>
         
         <!-- Dashboard statistiche -->
         <div class="stats-dashboard" id="statsDashboard">
@@ -695,15 +725,12 @@
             
             <div class="flashcard" id="flashcard">
                 <div class="flashcard-question" id="cardQuestion"></div>
-                
                 <div id="cardImageContainer" class="hidden">
-                    <img id="cardImage" class="flashcard-image" src="" alt="Immagine della carta">
+                    <img id="cardImage" class="flashcard-image" src="" alt="Immagine">
                 </div>
-                
                 <div id="cardAnswerSection" class="hidden">
                     <div class="flashcard-answer" id="cardAnswer"></div>
                 </div>
-                
                 <div class="flashcard-meta" id="cardMeta"></div>
             </div>
             
@@ -715,49 +742,33 @@
                 <div id="ratingSection" class="hidden">
                     <p class="mb-20" style="color: #666;">Come hai risposto?</p>
                     <div class="rating-buttons">
-                        <button class="rating-btn hard" onclick="rateCard(1)">
-                            ❌ Difficile (1 giorno)
-                        </button>
-                        <button class="rating-btn good" onclick="rateCard(3)">
-                            ✓ Buona (ripeti)
-                        </button>
-                        <button class="rating-btn easy" onclick="rateCard(5)">
-                            ⭐ Facile (allontana)
-                        </button>
+                        <button class="rating-btn hard" onclick="rateCard(1)">❌ Difficile</button>
+                        <button class="rating-btn good" onclick="rateCard(3)">✓ Buona</button>
+                        <button class="rating-btn easy" onclick="rateCard(5)">⭐ Facile</button>
                     </div>
                 </div>
             </div>
             
             <div class="text-center" style="margin-top: 20px;">
-                <button onclick="endReview()" class="secondary">
-                    ← Torna al Menu
-                </button>
+                <button onclick="endReview()" class="secondary">← Torna al Menu</button>
             </div>
         </div>
         
-        <!-- === MODIFICATO: Sezione Aggiungi Carta con supporto Cloze === -->
+        <!-- Sezione Aggiungi Carta -->
         <div id="addCardSection" class="hidden">
             <h2 style="margin-bottom: 20px;">➕ Aggiungi Nuova Flashcard</h2>
             
-            <!-- Tab per tipo carta -->
             <div class="card-type-tabs">
-                <div class="card-type-tab active" id="tabBasic" onclick="switchCardType('basic')">
-                    📝 Carta Base
-                </div>
-                <div class="card-type-tab cloze" id="tabCloze" onclick="switchCardType('cloze')">
-                    🧩 Cloze (riempi spazi)
-                </div>
+                <div class="card-type-tab active" id="tabBasic" onclick="switchCardType('basic')">📝 Carta Base</div>
+                <div class="card-type-tab cloze" id="tabCloze" onclick="switchCardType('cloze')">🧩 Cloze</div>
             </div>
             
-            <!-- Help box per Cloze (nascosto di default) -->
             <div class="cloze-help-box hidden" id="clozeHelpBox">
                 <h4>🧩 Come creare carte Cloze</h4>
                 <p>Scrivi il testo e metti tra <code>{{doppie graffe}}</code> le parole da nascondere:</p>
                 <div class="example">
-                    <strong>Scrivi:</strong><br>
-                    La sindrome di {{Wallenberg}} è causata da occlusione della {{PICA}}.<br><br>
-                    <strong>Durante la review vedrai:</strong><br>
-                    La sindrome di <span class="cloze-blank">[...]</span> è causata da occlusione della <span class="cloze-blank">[...]</span>.
+                    <strong>Scrivi:</strong> La sindrome di {{Wallenberg}} è causata da occlusione della {{PICA}}.<br>
+                    <strong>Vedrai:</strong> La sindrome di <span class="cloze-blank">[...]</span> è causata da occlusione della <span class="cloze-blank">[...]</span>.
                 </div>
             </div>
             
@@ -781,29 +792,25 @@
                     </select>
                 </div>
                 
-                <!-- Campi per carta BASE -->
                 <div id="basicCardFields">
                     <div class="form-group">
                         <label for="newQuestion">Domanda</label>
-                        <textarea id="newQuestion" placeholder="Es: Quali sono le caratteristiche cliniche della sindrome di Wallenberg?"></textarea>
+                        <textarea id="newQuestion" placeholder="Es: Quali sono le caratteristiche della sindrome di Wallenberg?"></textarea>
                     </div>
-                    
                     <div class="form-group">
                         <label for="newAnswer">Risposta</label>
-                        <textarea id="newAnswer" placeholder="Scrivi la risposta completa..." rows="6"></textarea>
+                        <textarea id="newAnswer" placeholder="Scrivi la risposta..." rows="6"></textarea>
                     </div>
                 </div>
                 
-                <!-- Campi per carta CLOZE -->
                 <div id="clozeCardFields" class="hidden">
                     <div class="form-group">
                         <label for="newClozeText">Testo con Cloze</label>
-                        <textarea id="newClozeText" placeholder="Es: La sindrome di {{Wallenberg}} è causata da occlusione della {{PICA}} e si manifesta con {{vertigine}}, {{disfagia}} e sindrome di {{Horner}}." rows="6"></textarea>
+                        <textarea id="newClozeText" placeholder="Es: La sindrome di {{Wallenberg}} è causata da occlusione della {{PICA}}." rows="6"></textarea>
                     </div>
-                    
                     <div class="form-group">
                         <label>Anteprima</label>
-                        <div id="clozePreview" style="background: #f8f9fa; padding: 15px; border-radius: 8px; min-height: 60px;">
+                        <div id="clozePreview" style="background: #f8f9fa; padding: 15px; border-radius: 8px;">
                             <span style="color: #888;">L'anteprima apparirà qui...</span>
                         </div>
                     </div>
@@ -812,115 +819,75 @@
                 <div class="form-group">
                     <label for="newImageUrl">URL Immagine (opzionale)</label>
                     <input type="text" id="newImageUrl" placeholder="https://esempio.com/immagine.jpg">
-                    <p style="font-size: 12px; color: #888; margin-top: 5px;">
-                        💡 Usa immagini da Wikimedia Commons per neuroanatomia
-                    </p>
                 </div>
             </div>
             
             <div class="menu-buttons">
-                <button onclick="saveCard()">
-                    💾 Salva Carta
-                </button>
-                <button onclick="showMenu()" class="secondary">
-                    ← Annulla
-                </button>
+                <button onclick="saveCard()">💾 Salva Carta</button>
+                <button onclick="showMenu()" class="secondary">← Annulla</button>
             </div>
         </div>
         
         <!-- Sezione Gestisci Carte -->
         <div id="manageCardsSection" class="hidden">
             <h2 style="margin-bottom: 20px;">✏️ Gestisci Carte</h2>
-            
             <div class="filter-bar">
-                <select id="filterCategory" onchange="filterCards()">
-                    <option value="">Tutte le categorie</option>
-                </select>
-                <input type="text" id="filterSearch" placeholder="Cerca nelle domande..." oninput="filterCards()">
+                <select id="filterCategory" onchange="filterCards()"><option value="">Tutte le categorie</option></select>
+                <input type="text" id="filterSearch" placeholder="Cerca..." oninput="filterCards()">
             </div>
-            
-            <div class="cards-list" id="cardsList">
-                Caricamento...
-            </div>
-            
+            <div class="cards-list" id="cardsList">Caricamento...</div>
             <div class="text-center" style="margin-top: 20px;">
-                <button onclick="showMenu()" class="secondary">
-                    ← Torna al Menu
-                </button>
+                <button onclick="showMenu()" class="secondary">← Torna al Menu</button>
             </div>
         </div>
         
         <!-- Sezione Leeches -->
         <div id="leechesSection" class="hidden">
-            <h2 style="margin-bottom: 20px;">🧛 Gestione Carte Sospese (Leeches)</h2>
-            
+            <h2 style="margin-bottom: 20px;">🧛 Gestione Leeches</h2>
             <div class="leech-info-box">
                 <h3>Cosa sono le Leeches?</h3>
-                <p style="margin-bottom: 10px;">Le carte sospese hanno raggiunto 4+ fallimenti. Prima di riabilitarle:</p>
+                <p>Carte con 4+ fallimenti. Prima di riabilitarle:</p>
                 <ul>
-                    <li><strong>Dividi</strong> la carta in 2-3 carte più specifiche</li>
-                    <li><strong>Aggiungi un'immagine</strong> (dual coding)</li>
-                    <li><strong>Crea una mnemonica</strong> o associazione</li>
-                    <li><strong>Trasforma in Cloze</strong> per mantenere il contesto</li>
+                    <li>Dividi in carte più piccole</li>
+                    <li>Aggiungi un'immagine</li>
+                    <li>Trasforma in Cloze</li>
                 </ul>
             </div>
-            
-            <div class="cards-list" id="leechesList">
-                Caricamento...
-            </div>
-            
+            <div class="cards-list" id="leechesList">Caricamento...</div>
             <div class="text-center" style="margin-top: 20px;">
-                <button onclick="showMenu()" class="secondary">
-                    ← Torna al Menu
-                </button>
+                <button onclick="showMenu()" class="secondary">← Torna al Menu</button>
             </div>
         </div>
         
-        <!-- Sezione Statistiche Dettagliate -->
+        <!-- Sezione Statistiche -->
         <div id="statsSection" class="hidden">
-            <h2 style="margin-bottom: 20px;">📊 Statistiche per Categoria</h2>
-            
-            <div class="category-stats" id="categoryStatsList">
-                Caricamento...
-            </div>
-            
-            <h3 style="margin: 30px 0 15px 0;">⚠️ Carte a Rischio (3+ fallimenti)</h3>
-            <p style="font-size: 14px; color: #666; margin-bottom: 15px;">
-                Queste carte potrebbero diventare leeches. Considera di semplificarle.
-            </p>
-            <div id="problematicCardsList">
-                Caricamento...
-            </div>
-            
+            <h2 style="margin-bottom: 20px;">📊 Statistiche</h2>
+            <div class="category-stats" id="categoryStatsList">Caricamento...</div>
+            <h3 style="margin: 30px 0 15px 0;">⚠️ Carte a Rischio</h3>
+            <div id="problematicCardsList">Caricamento...</div>
             <div class="text-center" style="margin-top: 30px;">
-                <button onclick="showMenu()" class="secondary">
-                    ← Torna al Menu
-                </button>
+                <button onclick="showMenu()" class="secondary">← Torna al Menu</button>
             </div>
         </div>
         
         <!-- Sessione completata -->
         <div id="completedSection" class="hidden">
             <div class="text-center" style="padding: 40px 0;">
-                <h2 style="color: #26de81; margin-bottom: 20px;">🎉 Sessione Completata!</h2>
+                <h2 style="color: #26de81; margin-bottom: 20px;" id="completedTitle">🎉 Sessione Completata!</h2>
                 <p style="color: #666; margin-bottom: 30px;" id="sessionSummary"></p>
-                <button onclick="showMenu()">
-                    ← Torna al Menu
-                </button>
+                <button onclick="showMenu()">← Torna al Menu</button>
             </div>
         </div>
     </div>
     
-    <!-- Modal Modifica Carta -->
+    <!-- Modal Modifica -->
     <div class="modal" id="editModal">
         <div class="modal-content">
             <div class="modal-header">
                 <h2>✏️ Modifica Carta</h2>
                 <button class="modal-close" onclick="closeEditModal()">×</button>
             </div>
-            
             <input type="hidden" id="editCardId">
-            
             <div class="form-group">
                 <label for="editCategory">Categoria</label>
                 <select id="editCategory">
@@ -939,139 +906,88 @@
                     <option value="Altro">Altro</option>
                 </select>
             </div>
-            
             <div class="form-group">
-                <label for="editQuestion">Domanda / Testo Cloze</label>
+                <label for="editQuestion">Domanda</label>
                 <textarea id="editQuestion" rows="3"></textarea>
-                <p style="font-size: 12px; color: #888; margin-top: 5px;">
-                    💡 Per Cloze: usa {{doppie graffe}} per nascondere parole
-                </p>
             </div>
-            
             <div class="form-group">
                 <label for="editAnswer">Risposta</label>
                 <textarea id="editAnswer" rows="6"></textarea>
             </div>
-            
             <div class="form-group">
-                <label for="editImageUrl">URL Immagine (opzionale)</label>
-                <input type="text" id="editImageUrl" placeholder="https://esempio.com/immagine.jpg">
+                <label for="editImageUrl">URL Immagine</label>
+                <input type="text" id="editImageUrl">
             </div>
-            
             <div id="editImagePreview" class="hidden" style="margin-bottom: 15px;">
                 <img id="editImagePreviewImg" style="max-width: 200px; border-radius: 8px;">
             </div>
-            
             <div class="menu-buttons">
-                <button onclick="saveEditCard()">
-                    💾 Salva Modifiche
-                </button>
-                <button onclick="closeEditModal()" class="secondary">
-                    Annulla
-                </button>
+                <button onclick="saveEditCard()">💾 Salva</button>
+                <button onclick="closeEditModal()" class="secondary">Annulla</button>
             </div>
         </div>
     </div>
     
-    <!-- Toast notification -->
     <div class="toast" id="toast"></div>
 
     <script>
-        // Variabili globali
         let currentCard = null;
         let reviewedCount = 0;
         let remainingCards = 0;
         let allCards = [];
-        let currentCardType = 'basic'; // 'basic' o 'cloze'
+        let currentCardType = 'basic';
+        let dailyGoal = 20;
+        let sessionReviewedToday = 0;
         
-        /**
-         * INIZIALIZZAZIONE
-         */
         document.addEventListener('DOMContentLoaded', function() {
             loadStats();
-            
-            // Listener per anteprima cloze in tempo reale
             document.getElementById('newClozeText').addEventListener('input', updateClozePreview);
         });
         
-        /**
-         * === NUOVO: Funzioni per Cloze ===
-         */
-        
-        // Verifica se un testo è una carta Cloze
-        function isClozeCard(text) {
-            return /\{\{.+?\}\}/.test(text);
-        }
-        
-        // Conta quante cloze ci sono
-        function countClozes(text) {
-            const matches = text.match(/\{\{.+?\}\}/g);
-            return matches ? matches.length : 0;
-        }
-        
-        // Converte testo cloze in versione con blanks (per la domanda)
-        function clozeToQuestion(text) {
-            return text.replace(/\{\{(.+?)\}\}/g, '<span class="cloze-blank">[...]</span>');
-        }
-        
-        // Converte testo cloze in versione con risposte evidenziate
-        function clozeToAnswer(text) {
-            return text.replace(/\{\{(.+?)\}\}/g, '<span class="cloze-revealed">$1</span>');
-        }
-        
-        // Estrae le risposte da un testo cloze
+        // === CLOZE FUNCTIONS ===
+        function isClozeCard(text) { return /\{\{.+?\}\}/.test(text); }
+        function countClozes(text) { const m = text.match(/\{\{.+?\}\}/g); return m ? m.length : 0; }
+        function clozeToQuestion(text) { return text.replace(/\{\{(.+?)\}\}/g, '<span class="cloze-blank">[...]</span>'); }
+        function clozeToAnswer(text) { return text.replace(/\{\{(.+?)\}\}/g, '<span class="cloze-revealed">$1</span>'); }
         function extractClozeAnswers(text) {
-            const matches = text.match(/\{\{(.+?)\}\}/g);
-            if (!matches) return [];
-            return matches.map(m => m.replace(/\{\{|\}\}/g, ''));
+            const m = text.match(/\{\{(.+?)\}\}/g);
+            return m ? m.map(x => x.replace(/\{\{|\}\}/g, '')) : [];
         }
         
-        // Aggiorna anteprima cloze
         function updateClozePreview() {
             const text = document.getElementById('newClozeText').value;
             const preview = document.getElementById('clozePreview');
-            
-            if (text.trim() === '') {
+            if (!text.trim()) {
                 preview.innerHTML = '<span style="color: #888;">L\'anteprima apparirà qui...</span>';
                 return;
             }
-            
-            const numClozes = countClozes(text);
-            if (numClozes === 0) {
-                preview.innerHTML = '<span style="color: #ff6b6b;">⚠️ Aggiungi almeno una {{parola}} tra doppie graffe</span>';
+            const num = countClozes(text);
+            if (num === 0) {
+                preview.innerHTML = '<span style="color: #ff6b6b;">⚠️ Aggiungi almeno una {{parola}}</span>';
                 return;
             }
-            
-            const questionView = clozeToQuestion(text);
-            preview.innerHTML = `
-                <div style="margin-bottom: 10px;"><strong>Domanda:</strong></div>
-                <div style="margin-bottom: 15px;">${questionView}</div>
-                <div style="color: #26de81; font-size: 12px;">✓ ${numClozes} campo/i da ricordare</div>
-            `;
+            preview.innerHTML = `<div style="margin-bottom: 10px;"><strong>Domanda:</strong></div>
+                <div>${clozeToQuestion(text)}</div>
+                <div style="color: #26de81; font-size: 12px; margin-top: 10px;">✓ ${num} campo/i</div>`;
         }
         
-        // Cambia tipo carta (basic/cloze)
         function switchCardType(type) {
             currentCardType = type;
-            
-            // Aggiorna tabs
             document.getElementById('tabBasic').classList.toggle('active', type === 'basic');
             document.getElementById('tabCloze').classList.toggle('active', type === 'cloze');
-            
-            // Mostra/nascondi campi appropriati
             document.getElementById('basicCardFields').classList.toggle('hidden', type === 'cloze');
             document.getElementById('clozeCardFields').classList.toggle('hidden', type === 'basic');
             document.getElementById('clozeHelpBox').classList.toggle('hidden', type === 'basic');
         }
         
-        /**
-         * NAVIGAZIONE
-         */
+        // === NAVIGATION ===
         function showMenu() {
             hideAllSections();
             document.getElementById('menuSection').classList.remove('hidden');
             document.getElementById('statsDashboard').classList.remove('hidden');
             document.getElementById('insightsBox').classList.remove('hidden');
+            document.getElementById('streakBanner').classList.remove('hidden');
+            document.getElementById('dailyGoalSection').classList.remove('hidden');
             loadStats();
         }
         
@@ -1080,20 +996,18 @@
              'statsSection', 'completedSection', 'leechesSection'].forEach(id => {
                 document.getElementById(id).classList.add('hidden');
             });
+            document.getElementById('streakBanner').classList.add('hidden');
+            document.getElementById('dailyGoalSection').classList.add('hidden');
         }
         
         function showAddCard() {
             hideAllSections();
             document.getElementById('addCardSection').classList.remove('hidden');
-            
-            // Reset form
             document.getElementById('newQuestion').value = '';
             document.getElementById('newAnswer').value = '';
             document.getElementById('newClozeText').value = '';
             document.getElementById('newImageUrl').value = '';
             document.getElementById('clozePreview').innerHTML = '<span style="color: #888;">L\'anteprima apparirà qui...</span>';
-            
-            // Default a carta base
             switchCardType('basic');
         }
         
@@ -1115,9 +1029,7 @@
             loadLeeches();
         }
         
-        /**
-         * STATISTICHE
-         */
+        // === STATS (con streak) ===
         async function loadStats() {
             try {
                 const response = await fetch('/api/stats.php');
@@ -1130,24 +1042,51 @@
                 
                 const leechCount = data.leeches || 0;
                 document.getElementById('statLeeches').textContent = leechCount;
+                document.getElementById('statLeechesBox').style.display = leechCount === 0 ? 'none' : 'block';
                 
-                const leechBox = document.getElementById('statLeechesBox');
-                if (leechCount === 0) {
-                    leechBox.style.display = 'none';
-                } else {
-                    leechBox.style.display = 'block';
+                // === STREAK ===
+                if (data.streak) {
+                    const streak = data.streak;
+                    document.getElementById('streakCount').textContent = streak.current;
+                    document.getElementById('bestStreak').textContent = streak.best;
+                    document.getElementById('totalDays').textContent = streak.total_days;
+                    dailyGoal = streak.daily_goal;
+                    
+                    // Emoji e messaggio
+                    if (streak.current >= 7) {
+                        document.getElementById('streakEmoji').textContent = '🔥';
+                        document.getElementById('streakMessage').textContent = 'Sei in fuoco! Continua così!';
+                    } else if (streak.current >= 3) {
+                        document.getElementById('streakEmoji').textContent = '🔥';
+                        document.getElementById('streakMessage').textContent = 'Ottima streak! Non fermarti!';
+                    } else if (streak.current >= 1) {
+                        document.getElementById('streakEmoji').textContent = '✨';
+                        document.getElementById('streakMessage').textContent = 'Buon inizio! Costruisci la tua streak!';
+                    } else {
+                        document.getElementById('streakEmoji').textContent = '📚';
+                        document.getElementById('streakMessage').textContent = 'Studia oggi per iniziare!';
+                    }
+                    
+                    // Progress bar
+                    sessionReviewedToday = data.reviewed_today || 0;
+                    document.getElementById('reviewedToday').textContent = sessionReviewedToday;
+                    document.getElementById('dailyGoal').textContent = dailyGoal;
+                    const progress = Math.min(100, (sessionReviewedToday / dailyGoal) * 100);
+                    const progressFill = document.getElementById('progressFill');
+                    progressFill.style.width = progress + '%';
+                    progressFill.classList.toggle('complete', progress >= 100);
                 }
                 
+                // Insights
                 if (data.insights && data.insights.length > 0) {
                     document.getElementById('insightsList').innerHTML = 
                         data.insights.map(i => `<div class="insight-item">${i}</div>`).join('');
                 } else {
-                    document.getElementById('insightsList').innerHTML = 
-                        '<div class="insight-item">✅ Tutto bene! Continua così.</div>';
+                    document.getElementById('insightsList').innerHTML = '<div class="insight-item">✅ Tutto bene!</div>';
                 }
                 
             } catch (error) {
-                console.error('Errore caricamento stats:', error);
+                console.error('Errore:', error);
             }
         }
         
@@ -1155,270 +1094,172 @@
             try {
                 const response = await fetch('/api/leeches.php');
                 const data = await response.json();
-                
                 if (data.leeches && data.leeches.length > 0) {
                     document.getElementById('leechesList').innerHTML = data.leeches.map(card => {
                         const isCloze = isClozeCard(card.question);
-                        return `
-                            <div class="card-item leech ${isCloze ? 'cloze' : ''}">
-                                <div class="card-item-header">
-                                    <div class="card-item-content">
-                                        <div class="card-item-question">
-                                            ${escapeHtml(card.question)}
-                                            <span class="leech-badge">${card.lapses} fallimenti</span>
-                                            ${isCloze ? '<span class="cloze-type-badge">Cloze</span>' : ''}
-                                        </div>
-                                        <div class="card-item-answer">${escapeHtml(card.answer)}</div>
-                                        <div class="card-item-meta">
-                                            ${card.category || 'Senza categoria'} | EF: ${parseFloat(card.easiness_factor).toFixed(2)}
-                                        </div>
+                        return `<div class="card-item leech">
+                            <div class="card-item-header">
+                                <div class="card-item-content">
+                                    <div class="card-item-question">${escapeHtml(card.question)}
+                                        <span class="leech-badge">${card.lapses} fail</span>
+                                        ${isCloze ? '<span class="cloze-type-badge">Cloze</span>' : ''}
                                     </div>
-                                    <div class="card-item-actions">
-                                        <button class="small secondary" onclick="openEditModal(${card.id})">✏️ Modifica</button>
-                                        <button class="small warning" onclick="reactivateLeech(${card.id})">🔄 Riattiva</button>
-                                        <button class="small danger" onclick="deleteLeech(${card.id})">🗑️</button>
-                                    </div>
+                                    <div class="card-item-meta">${card.category || 'N/A'} | EF: ${parseFloat(card.easiness_factor).toFixed(2)}</div>
+                                </div>
+                                <div class="card-item-actions">
+                                    <button class="small secondary" onclick="openEditModal(${card.id})">✏️</button>
+                                    <button class="small warning" onclick="reactivateLeech(${card.id})">🔄</button>
+                                    <button class="small danger" onclick="deleteLeech(${card.id})">🗑️</button>
                                 </div>
                             </div>
-                        `;
+                        </div>`;
                     }).join('');
                 } else {
-                    document.getElementById('leechesList').innerHTML = 
-                        '<p style="text-align: center; color: #26de81; padding: 30px;">✅ Nessuna carta sospesa! Ottimo lavoro!</p>';
+                    document.getElementById('leechesList').innerHTML = '<p style="text-align:center;color:#26de81;padding:30px;">✅ Nessuna leech!</p>';
                 }
-                
             } catch (error) {
-                console.error('Errore:', error);
-                document.getElementById('leechesList').innerHTML = '<p>Errore nel caricamento.</p>';
+                document.getElementById('leechesList').innerHTML = '<p>Errore.</p>';
             }
         }
         
         async function reactivateLeech(cardId) {
-            if (!confirm('Hai modificato/semplificato questa carta? Riattivandola apparirà domani nel ripasso.')) {
-                return;
-            }
-            
+            if (!confirm('Riattivare questa carta?')) return;
             try {
                 const response = await fetch('/api/leeches.php', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ action: 'reactivate', card_id: cardId })
                 });
-                
                 const data = await response.json();
-                
                 if (data.success) {
-                    showToast('Carta riattivata! Apparirà domani.', 'success');
+                    showToast('Carta riattivata!', 'success');
                     loadLeeches();
                     loadStats();
-                } else {
-                    showToast(data.error || 'Errore', 'error');
                 }
-                
-            } catch (error) {
-                showToast('Errore di connessione', 'error');
-            }
+            } catch (error) { showToast('Errore', 'error'); }
         }
         
         async function deleteLeech(cardId) {
-            if (!confirm('Eliminare definitivamente questa carta? L\'azione non può essere annullata.')) {
-                return;
-            }
-            
+            if (!confirm('Eliminare definitivamente?')) return;
             try {
                 const response = await fetch('/api/leeches.php', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ action: 'delete', card_id: cardId })
                 });
-                
                 const data = await response.json();
-                
                 if (data.success) {
-                    showToast('Carta eliminata', 'success');
+                    showToast('Eliminata', 'success');
                     loadLeeches();
                     loadStats();
-                } else {
-                    showToast(data.error || 'Errore', 'error');
                 }
-                
-            } catch (error) {
-                showToast('Errore di connessione', 'error');
-            }
+            } catch (error) { showToast('Errore', 'error'); }
         }
         
         async function loadDetailedStats() {
             try {
                 const response = await fetch('/api/stats.php');
                 const data = await response.json();
-                
                 if (data.by_category && data.by_category.length > 0) {
                     document.getElementById('categoryStatsList').innerHTML = data.by_category.map(cat => {
                         const efClass = cat.avg_ef >= 2.3 ? 'ef-high' : (cat.avg_ef >= 2.0 ? 'ef-medium' : 'ef-low');
-                        const suspendedInfo = cat.suspended > 0 ? ` | 🧛 ${cat.suspended} sospese` : '';
-                        return `
-                            <div class="category-item">
-                                <div>
-                                    <div class="category-name">${cat.category}</div>
-                                    <div class="category-stats-mini">
-                                        ${cat.total} carte | ${cat.due} da ripassare | ${cat.total_lapses || 0} fallimenti${suspendedInfo}
-                                    </div>
-                                </div>
-                                <span class="category-ef ${efClass}">EF: ${cat.avg_ef || 'N/A'}</span>
-                            </div>
-                        `;
-                    }).join('');
-                } else {
-                    document.getElementById('categoryStatsList').innerHTML = '<p>Nessuna categoria trovata.</p>';
-                }
-                
-                if (data.problematic_cards && data.problematic_cards.length > 0) {
-                    document.getElementById('problematicCardsList').innerHTML = data.problematic_cards
-                        .filter(card => !card.suspended)
-                        .map(card => `
-                        <div class="category-item">
+                        return `<div class="category-item">
                             <div>
-                                <div class="category-name">${card.question.substring(0, 60)}...</div>
-                                <div class="category-stats-mini">
-                                    ${card.category || 'Senza categoria'} | ${card.lapses} fallimenti (diventa leech a 4)
-                                </div>
+                                <div class="category-name">${cat.category}</div>
+                                <div class="category-stats-mini">${cat.total} carte | ${cat.due} da ripassare</div>
                             </div>
-                            <span class="category-ef ef-low">EF: ${parseFloat(card.easiness_factor).toFixed(2)}</span>
-                        </div>
-                    `).join('') || '<p style="color: #26de81;">✅ Nessuna carta a rischio!</p>';
-                } else {
-                    document.getElementById('problematicCardsList').innerHTML = 
-                        '<p style="color: #26de81;">✅ Nessuna carta a rischio!</p>';
+                            <span class="category-ef ${efClass}">EF: ${cat.avg_ef || 'N/A'}</span>
+                        </div>`;
+                    }).join('');
                 }
-                
-            } catch (error) {
-                console.error('Errore:', error);
-            }
+                if (data.problematic_cards) {
+                    const active = data.problematic_cards.filter(c => !c.suspended);
+                    document.getElementById('problematicCardsList').innerHTML = active.length > 0 ?
+                        active.map(c => `<div class="category-item">
+                            <div class="category-name">${c.question.substring(0,50)}...</div>
+                            <span class="category-ef ef-low">${c.lapses} fail</span>
+                        </div>`).join('') : '<p style="color:#26de81;">✅ Nessuna!</p>';
+                }
+            } catch (error) { console.error(error); }
         }
         
-        /**
-         * GESTIONE CARTE - Lista e Filtri
-         */
+        // === CARDS ===
         async function loadAllCards() {
             try {
                 const response = await fetch('/api/cards.php');
                 const data = await response.json();
                 allCards = data.cards || [];
-                
                 const categories = [...new Set(allCards.map(c => c.category).filter(Boolean))];
-                const filterSelect = document.getElementById('filterCategory');
-                filterSelect.innerHTML = '<option value="">Tutte le categorie</option>' +
+                document.getElementById('filterCategory').innerHTML = '<option value="">Tutte</option>' +
                     categories.map(c => `<option value="${c}">${c}</option>`).join('');
-                
                 renderCardsList(allCards);
-                
             } catch (error) {
-                console.error('Errore:', error);
-                document.getElementById('cardsList').innerHTML = '<p>Errore nel caricamento delle carte.</p>';
+                document.getElementById('cardsList').innerHTML = '<p>Errore.</p>';
             }
         }
         
         function filterCards() {
-            const category = document.getElementById('filterCategory').value;
+            const cat = document.getElementById('filterCategory').value;
             const search = document.getElementById('filterSearch').value.toLowerCase();
-            
             let filtered = allCards;
-            
-            if (category) {
-                filtered = filtered.filter(c => c.category === category);
-            }
-            
-            if (search) {
-                filtered = filtered.filter(c => 
-                    c.question.toLowerCase().includes(search) || 
-                    c.answer.toLowerCase().includes(search)
-                );
-            }
-            
+            if (cat) filtered = filtered.filter(c => c.category === cat);
+            if (search) filtered = filtered.filter(c => c.question.toLowerCase().includes(search) || c.answer.toLowerCase().includes(search));
             renderCardsList(filtered);
         }
         
         function renderCardsList(cards) {
             if (cards.length === 0) {
-                document.getElementById('cardsList').innerHTML = '<p>Nessuna carta trovata.</p>';
+                document.getElementById('cardsList').innerHTML = '<p>Nessuna carta.</p>';
                 return;
             }
-            
             document.getElementById('cardsList').innerHTML = cards.map(card => {
-                const ef = parseFloat(card.easiness_factor).toFixed(2);
-                const lapses = card.lapses || 0;
                 const isSuspended = card.suspended == 1;
                 const isCloze = isClozeCard(card.question);
-                const imageHtml = card.image_url ? 
-                    `<img src="${card.image_url}" class="card-item-image" onerror="this.style.display='none'">` : '';
-                const leechBadge = isSuspended ? '<span class="leech-badge">🧛 Sospesa</span>' : '';
-                const clozeBadge = isCloze ? '<span class="cloze-type-badge">Cloze</span>' : '';
-                
-                let cardClass = 'card-item';
-                if (isSuspended) cardClass += ' leech';
-                else if (isCloze) cardClass += ' cloze';
-                
-                return `
-                    <div class="${cardClass}">
-                        <div class="card-item-header">
-                            ${imageHtml}
-                            <div class="card-item-content">
-                                <div class="card-item-question">${escapeHtml(card.question)} ${leechBadge} ${clozeBadge}</div>
-                                <div class="card-item-answer">${escapeHtml(card.answer)}</div>
-                                <div class="card-item-meta">
-                                    ${card.category || 'Senza categoria'} | EF: ${ef} | Fallimenti: ${lapses}
-                                </div>
+                let cls = 'card-item';
+                if (isSuspended) cls += ' leech';
+                else if (isCloze) cls += ' cloze';
+                return `<div class="${cls}">
+                    <div class="card-item-header">
+                        <div class="card-item-content">
+                            <div class="card-item-question">${escapeHtml(card.question)}
+                                ${isSuspended ? '<span class="leech-badge">Sospesa</span>' : ''}
+                                ${isCloze ? '<span class="cloze-type-badge">Cloze</span>' : ''}
                             </div>
-                            <div class="card-item-actions">
-                                <button class="small secondary" onclick="openEditModal(${card.id})">✏️ Modifica</button>
-                                ${isSuspended ? 
-                                    `<button class="small warning" onclick="reactivateLeech(${card.id})">🔄 Riattiva</button>` : 
-                                    ''}
-                                <button class="small danger" onclick="deleteCard(${card.id})">🗑️</button>
-                            </div>
+                            <div class="card-item-meta">${card.category || 'N/A'} | EF: ${parseFloat(card.easiness_factor).toFixed(2)}</div>
+                        </div>
+                        <div class="card-item-actions">
+                            <button class="small secondary" onclick="openEditModal(${card.id})">✏️</button>
+                            ${isSuspended ? `<button class="small warning" onclick="reactivateLeech(${card.id})">🔄</button>` : ''}
+                            <button class="small danger" onclick="deleteCard(${card.id})">🗑️</button>
                         </div>
                     </div>
-                `;
+                </div>`;
             }).join('');
         }
         
-        /**
-         * MODIFICA CARTA - Modal
-         */
+        // === EDIT MODAL ===
         async function openEditModal(cardId) {
             try {
                 const response = await fetch(`/api/edit.php?id=${cardId}`);
                 const data = await response.json();
-                
                 if (data.success && data.card) {
-                    const card = data.card;
-                    document.getElementById('editCardId').value = card.id;
-                    document.getElementById('editCategory').value = card.category || 'Altro';
-                    document.getElementById('editQuestion').value = card.question;
-                    document.getElementById('editAnswer').value = card.answer;
-                    document.getElementById('editImageUrl').value = card.image_url || '';
-                    
-                    if (card.image_url) {
-                        document.getElementById('editImagePreviewImg').src = card.image_url;
+                    document.getElementById('editCardId').value = data.card.id;
+                    document.getElementById('editCategory').value = data.card.category || 'Altro';
+                    document.getElementById('editQuestion').value = data.card.question;
+                    document.getElementById('editAnswer').value = data.card.answer;
+                    document.getElementById('editImageUrl').value = data.card.image_url || '';
+                    if (data.card.image_url) {
+                        document.getElementById('editImagePreviewImg').src = data.card.image_url;
                         document.getElementById('editImagePreview').classList.remove('hidden');
                     } else {
                         document.getElementById('editImagePreview').classList.add('hidden');
                     }
-                    
                     document.getElementById('editModal').classList.add('show');
-                } else {
-                    showToast('Carta non trovata', 'error');
                 }
-                
-            } catch (error) {
-                showToast('Errore nel caricamento', 'error');
-                console.error(error);
-            }
+            } catch (error) { showToast('Errore', 'error'); }
         }
         
-        function closeEditModal() {
-            document.getElementById('editModal').classList.remove('show');
-        }
+        function closeEditModal() { document.getElementById('editModal').classList.remove('show'); }
         
         async function saveEditCard() {
             const id = document.getElementById('editCardId').value;
@@ -1426,74 +1267,41 @@
             const question = document.getElementById('editQuestion').value.trim();
             const answer = document.getElementById('editAnswer').value.trim();
             const imageUrl = document.getElementById('editImageUrl').value.trim();
-            
-            if (!question || !answer) {
-                showToast('Domanda e risposta sono obbligatorie', 'error');
-                return;
-            }
-            
+            if (!question || !answer) { showToast('Compila tutti i campi', 'error'); return; }
             try {
                 const response = await fetch('/api/edit.php', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ id, category, question, answer, image_url: imageUrl })
                 });
-                
                 const data = await response.json();
-                
                 if (data.success) {
-                    showToast('Carta aggiornata! ✅', 'success');
+                    showToast('Salvata!', 'success');
                     closeEditModal();
-                    
-                    if (!document.getElementById('leechesSection').classList.contains('hidden')) {
-                        loadLeeches();
-                    } else if (!document.getElementById('manageCardsSection').classList.contains('hidden')) {
-                        loadAllCards();
-                    }
-                } else {
-                    showToast(data.error || 'Errore nel salvataggio', 'error');
+                    if (!document.getElementById('leechesSection').classList.contains('hidden')) loadLeeches();
+                    else if (!document.getElementById('manageCardsSection').classList.contains('hidden')) loadAllCards();
                 }
-                
-            } catch (error) {
-                showToast('Errore di connessione', 'error');
-                console.error(error);
-            }
+            } catch (error) { showToast('Errore', 'error'); }
         }
         
-        /**
-         * ELIMINA CARTA
-         */
         async function deleteCard(cardId) {
-            if (!confirm('Sei sicuro di voler eliminare questa carta?')) {
-                return;
-            }
-            
+            if (!confirm('Eliminare?')) return;
             try {
                 const response = await fetch('/api/edit.php', {
                     method: 'DELETE',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ id: cardId })
                 });
-                
                 const data = await response.json();
-                
                 if (data.success) {
-                    showToast('Carta eliminata', 'success');
+                    showToast('Eliminata', 'success');
                     loadAllCards();
                     loadStats();
-                } else {
-                    showToast(data.error || 'Errore', 'error');
                 }
-                
-            } catch (error) {
-                showToast('Errore di connessione', 'error');
-                console.error(error);
-            }
+            } catch (error) { showToast('Errore', 'error'); }
         }
         
-        /**
-         * === MODIFICATO: SESSIONE DI REVIEW con supporto Cloze ===
-         */
+        // === REVIEW ===
         async function startReview() {
             reviewedCount = 0;
             hideAllSections();
@@ -1505,35 +1313,22 @@
             try {
                 const response = await fetch('/api/review.php');
                 const data = await response.json();
-                
                 if (data.card) {
                     currentCard = data.card;
                     remainingCards = data.remaining_today || 0;
-                    
-                    const flashcardEl = document.getElementById('flashcard');
                     const isCloze = isClozeCard(currentCard.question);
+                    document.getElementById('flashcard').classList.toggle('cloze-card', isCloze);
                     
-                    // Aggiorna stile flashcard
-                    flashcardEl.classList.toggle('cloze-card', isCloze);
-                    
-                    // Mostra domanda (con cloze blanks se necessario)
                     if (isCloze) {
                         document.getElementById('cardQuestion').innerHTML = clozeToQuestion(currentCard.question);
-                    } else {
-                        document.getElementById('cardQuestion').textContent = currentCard.question;
-                    }
-                    
-                    // Prepara risposta (con cloze evidenziati se necessario)
-                    if (isCloze) {
                         document.getElementById('cardAnswer').innerHTML = clozeToAnswer(currentCard.question);
                     } else {
+                        document.getElementById('cardQuestion').textContent = currentCard.question;
                         document.getElementById('cardAnswer').textContent = currentCard.answer;
                     }
                     
-                    document.getElementById('reviewProgress').textContent = 
-                        `Carta ${reviewedCount + 1} | Rimangono: ${remainingCards}`;
+                    document.getElementById('reviewProgress').textContent = `Carta ${reviewedCount + 1} | Rimangono: ${remainingCards}`;
                     
-                    // Immagine
                     if (currentCard.image_url) {
                         document.getElementById('cardImage').src = currentCard.image_url;
                         document.getElementById('cardImageContainer').classList.remove('hidden');
@@ -1541,31 +1336,18 @@
                         document.getElementById('cardImageContainer').classList.add('hidden');
                     }
                     
-                    // Meta info
                     const lapses = currentCard.lapses || 0;
-                    const ef = parseFloat(currentCard.easiness_factor).toFixed(2);
-                    let metaHtml = `Categoria: ${currentCard.category || 'Generale'} | EF: ${ef}`;
-                    if (isCloze) {
-                        metaHtml = `🧩 Cloze | ` + metaHtml;
-                    }
-                    if (lapses >= 3) {
-                        metaHtml += ` | ⚠️ ${lapses}/4 fallimenti`;
-                    }
-                    document.getElementById('cardMeta').innerHTML = metaHtml;
+                    let meta = `${isCloze ? '🧩 Cloze | ' : ''}${currentCard.category || 'N/A'} | EF: ${parseFloat(currentCard.easiness_factor).toFixed(2)}`;
+                    if (lapses >= 3) meta += ` | ⚠️ ${lapses}/4 fail`;
+                    document.getElementById('cardMeta').innerHTML = meta;
                     
-                    // Reset UI
                     document.getElementById('cardAnswerSection').classList.add('hidden');
                     document.getElementById('ratingSection').classList.add('hidden');
                     document.getElementById('showAnswerBtn').classList.remove('hidden');
-                    
                 } else {
                     showSessionComplete();
                 }
-                
-            } catch (error) {
-                showToast('Errore nel caricamento della carta', 'error');
-                console.error(error);
-            }
+            } catch (error) { showToast('Errore', 'error'); }
         }
         
         function showAnswer() {
@@ -1576,18 +1358,16 @@
         
         async function rateCard(quality) {
             if (!currentCard) return;
-            
             try {
                 const response = await fetch('/api/review.php', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ card_id: currentCard.id, quality: quality })
                 });
-                
                 const data = await response.json();
-                
                 if (data.success) {
                     reviewedCount++;
+                    sessionReviewedToday++;
                     
                     if (data.leech) {
                         showToast(data.warning, 'leech');
@@ -1596,71 +1376,55 @@
                         showToast(data.warning, 'warning');
                         setTimeout(() => loadNextCard(), 1200);
                     } else {
-                        let message = `Prossima review: ${data.interval_days} giorn${data.interval_days === 1 ? 'o' : 'i'}`;
-                        showToast(message, 'success');
+                        showToast(`Prossima: ${data.interval_days}g`, 'success');
                         setTimeout(() => loadNextCard(), 800);
                     }
-                    
-                } else {
-                    showToast('Errore nel salvataggio', 'error');
                 }
-                
-            } catch (error) {
-                showToast('Errore di connessione', 'error');
-                console.error(error);
-            }
+            } catch (error) { showToast('Errore', 'error'); }
         }
         
         function endReview() {
-            if (reviewedCount > 0) {
-                showSessionComplete();
-            } else {
-                showMenu();
-            }
+            if (reviewedCount > 0) showSessionComplete();
+            else showMenu();
         }
         
         function showSessionComplete() {
             hideAllSections();
             document.getElementById('completedSection').classList.remove('hidden');
-            document.getElementById('sessionSummary').textContent = 
-                `Hai ripassato ${reviewedCount} carte! 🎓`;
+            
+            let title = '🎉 Sessione Completata!';
+            let summary = `Hai ripassato ${reviewedCount} carte!`;
+            
+            // Celebrazione se obiettivo raggiunto
+            if (sessionReviewedToday >= dailyGoal) {
+                title = '🏆 Obiettivo Raggiunto!';
+                summary += ' Obiettivo giornaliero completato!';
+                showToast('🎯 Obiettivo giornaliero completato!', 'celebration');
+            }
+            
+            document.getElementById('completedTitle').textContent = title;
+            document.getElementById('sessionSummary').textContent = summary;
         }
         
-        /**
-         * === MODIFICATO: AGGIUNTA CARTE con supporto Cloze ===
-         */
+        // === SAVE CARD ===
         async function saveCard() {
             const category = document.getElementById('newCategory').value;
             const imageUrl = document.getElementById('newImageUrl').value.trim();
-            
             let question, answer;
             
             if (currentCardType === 'cloze') {
-                // Carta Cloze
                 const clozeText = document.getElementById('newClozeText').value.trim();
-                
-                if (!clozeText) {
-                    showToast('Inserisci il testo cloze!', 'error');
+                if (!clozeText || !isClozeCard(clozeText)) {
+                    showToast('Aggiungi almeno una {{parola}}', 'error');
                     return;
                 }
-                
-                if (!isClozeCard(clozeText)) {
-                    showToast('Aggiungi almeno una {{parola}} tra doppie graffe!', 'error');
-                    return;
-                }
-                
                 question = clozeText;
-                // La risposta per le cloze è l'elenco delle parole nascoste
-                const answers = extractClozeAnswers(clozeText);
-                answer = answers.join(', ');
-                
+                answer = extractClozeAnswers(clozeText).join(', ');
             } else {
-                // Carta Base
                 question = document.getElementById('newQuestion').value.trim();
                 answer = document.getElementById('newAnswer').value.trim();
-                
                 if (!question || !answer) {
-                    showToast('Compila domanda e risposta!', 'error');
+                    showToast('Compila tutti i campi', 'error');
                     return;
                 }
             }
@@ -1671,34 +1435,19 @@
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ question, answer, category, image_url: imageUrl || null })
                 });
-                
                 if (response.ok) {
-                    const cardTypeLabel = currentCardType === 'cloze' ? 'Cloze' : 'Base';
-                    showToast(`Carta ${cardTypeLabel} salvata! ✅`, 'success');
+                    showToast('Salvata!', 'success');
                     showMenu();
-                } else {
-                    showToast('Errore nel salvataggio', 'error');
                 }
-                
-            } catch (error) {
-                showToast('Errore di connessione', 'error');
-                console.error(error);
-            }
+            } catch (error) { showToast('Errore', 'error'); }
         }
         
-        /**
-         * UTILITY
-         */
+        // === UTILITY ===
         function showToast(message, type = 'info') {
             const toast = document.getElementById('toast');
             toast.textContent = message;
             toast.className = 'toast show ' + type;
-            
-            const duration = type === 'leech' ? 5000 : 3000;
-            
-            setTimeout(() => {
-                toast.classList.remove('show');
-            }, duration);
+            setTimeout(() => toast.classList.remove('show'), type === 'leech' || type === 'celebration' ? 5000 : 3000);
         }
         
         function escapeHtml(text) {
@@ -1707,32 +1456,20 @@
             return div.innerHTML;
         }
         
-        /**
-         * KEYBOARD SHORTCUTS
-         */
+        // === KEYBOARD ===
         document.addEventListener('keydown', function(e) {
             if (document.getElementById('reviewSection').classList.contains('hidden')) return;
             if (document.getElementById('editModal').classList.contains('show')) return;
-            
             if (e.code === 'Space') {
                 e.preventDefault();
-                if (!document.getElementById('showAnswerBtn').classList.contains('hidden')) {
-                    showAnswer();
-                }
-            } else if (e.key === '1' && !document.getElementById('ratingSection').classList.contains('hidden')) {
-                rateCard(1);
-            } else if (e.key === '2' && !document.getElementById('ratingSection').classList.contains('hidden')) {
-                rateCard(3);
-            } else if (e.key === '3' && !document.getElementById('ratingSection').classList.contains('hidden')) {
-                rateCard(5);
-            }
+                if (!document.getElementById('showAnswerBtn').classList.contains('hidden')) showAnswer();
+            } else if (e.key === '1' && !document.getElementById('ratingSection').classList.contains('hidden')) rateCard(1);
+            else if (e.key === '2' && !document.getElementById('ratingSection').classList.contains('hidden')) rateCard(3);
+            else if (e.key === '3' && !document.getElementById('ratingSection').classList.contains('hidden')) rateCard(5);
         });
         
-        // Chiudi modal cliccando fuori
         document.getElementById('editModal').addEventListener('click', function(e) {
-            if (e.target === this) {
-                closeEditModal();
-            }
+            if (e.target === this) closeEditModal();
         });
     </script>
 </body>
