@@ -1,148 +1,155 @@
 <?php
 /**
- * API Stats - Statistiche con Streak e Motivazione
+ * API Stats - Statistiche con Streak e Motivazione (AGGIORNATO)
  * 
- * NOVITÀ:
- * - Traccia i giorni consecutivi di studio (streak)
- * - Conta le carte riviste oggi
- * - Salva il record personale di streak
- * - Calcola statistiche motivazionali
+ * MODIFICHE:
+ * - Supporto multi-utente tramite sessione
+ * - Streak salvata nel database (tabella user_streaks) invece che file
+ * - Ogni utente ha le proprie statistiche separate
  * 
- * PERCHÉ TRACCIARE LE STREAK? (Base scientifica)
- * La ricerca sulla formazione di abitudini mostra che:
- * - Visualizzare i progressi aumenta la motivazione intrinseca
- * - Le streak creano "commitment devices" psicologici
- * - Celebrare piccoli successi rafforza il comportamento
+ * PERCHÉ STREAK SEPARATE? (Base scientifica)
+ * ------------------------------------------
+ * Le streak sono strumenti motivazionali personali.
+ * Mescolarle tra utenti diversi ridurrebbe l'effetto psicologico
+ * di "commitment" che le rende efficaci.
  */
 
 header('Content-Type: application/json');
 require_once __DIR__ . '/database.php';
 
 $db = getDatabase();
-
-// === File per persistenza streak (semplice, senza modifiche al DB) ===
-$streakFile = '/tmp/neurooral_streak_data.json';
-
-/**
- * Carica i dati streak dal file
- */
-function loadStreakData($file) {
-    if (file_exists($file)) {
-        $data = json_decode(file_get_contents($file), true);
-        if ($data) return $data;
-    }
-    return [
-        'last_study_date' => null,
-        'current_streak' => 0,
-        'best_streak' => 0,
-        'total_days_studied' => 0,
-        'daily_goal' => 20  // Obiettivo default: 20 carte/giorno
-    ];
-}
-
-/**
- * Salva i dati streak
- */
-function saveStreakData($file, $data) {
-    file_put_contents($file, json_encode($data));
-}
+$userId = getCurrentUserId();
 
 /**
  * Aggiorna la streak basandosi sull'attività di oggi
  */
-function updateStreak($streakData, $reviewedToday) {
+function updateStreak($db, $userId, $reviewedToday) {
     $today = date('Y-m-d');
     $yesterday = date('Y-m-d', strtotime('-1 day'));
     
-    // Se non ha studiato oggi, non aggiornare la streak
+    // Recupera dati streak correnti
+    $stmt = $db->prepare("SELECT * FROM user_streaks WHERE user_id = ?");
+    $stmt->execute([$userId]);
+    $streakData = $stmt->fetch(PDO::FETCH_ASSOC);
+    
+    // Se non esiste, creala
+    if (!$streakData) {
+        $db->prepare("INSERT INTO user_streaks (user_id) VALUES (?)")->execute([$userId]);
+        $streakData = [
+            'last_study_date' => null,
+            'current_streak' => 0,
+            'best_streak' => 0,
+            'total_days_studied' => 0,
+            'daily_goal' => 20
+        ];
+    }
+    
+    $lastDate = $streakData['last_study_date'];
+    $currentStreak = (int)$streakData['current_streak'];
+    $bestStreak = (int)$streakData['best_streak'];
+    $totalDays = (int)$streakData['total_days_studied'];
+    $dailyGoal = (int)$streakData['daily_goal'];
+    
+    // Se non ha studiato oggi, controlla se la streak è "morta"
     if ($reviewedToday == 0) {
-        // Controlla se la streak è "morta" (non ha studiato ieri)
-        if ($streakData['last_study_date'] !== null && 
-            $streakData['last_study_date'] !== $today && 
-            $streakData['last_study_date'] !== $yesterday) {
-            // Streak interrotta!
-            $streakData['current_streak'] = 0;
+        if ($lastDate !== null && $lastDate !== $today && $lastDate !== $yesterday) {
+            $currentStreak = 0;
         }
-        return $streakData;
-    }
-    
-    // Ha studiato oggi
-    if ($streakData['last_study_date'] === $today) {
-        // Già contato oggi, non fare nulla
-        return $streakData;
-    }
-    
-    if ($streakData['last_study_date'] === $yesterday) {
-        // Ha studiato anche ieri: incrementa streak
-        $streakData['current_streak']++;
-    } elseif ($streakData['last_study_date'] === null || 
-              $streakData['last_study_date'] !== $today) {
-        // Prima volta o streak interrotta: ricomincia da 1
-        if ($streakData['last_study_date'] !== $yesterday && 
-            $streakData['last_study_date'] !== null) {
-            $streakData['current_streak'] = 1;
+    } else {
+        // Ha studiato oggi
+        if ($lastDate === $today) {
+            // Già contato oggi, non fare nulla
+        } elseif ($lastDate === $yesterday) {
+            // Ha studiato anche ieri: incrementa streak
+            $currentStreak++;
+            $totalDays++;
         } else {
-            $streakData['current_streak'] = max(1, $streakData['current_streak'] + 1);
+            // Prima volta o streak interrotta: ricomincia da 1
+            $currentStreak = 1;
+            $totalDays++;
+        }
+        
+        // Aggiorna record se necessario
+        if ($currentStreak > $bestStreak) {
+            $bestStreak = $currentStreak;
+        }
+        
+        // Aggiorna data ultimo studio solo se cambiata
+        if ($lastDate !== $today) {
+            $lastDate = $today;
         }
     }
     
-    // Aggiorna record se necessario
-    if ($streakData['current_streak'] > $streakData['best_streak']) {
-        $streakData['best_streak'] = $streakData['current_streak'];
-    }
+    // Salva nel database
+    $stmt = $db->prepare("
+        UPDATE user_streaks 
+        SET last_study_date = ?,
+            current_streak = ?,
+            best_streak = ?,
+            total_days_studied = ?
+        WHERE user_id = ?
+    ");
+    $stmt->execute([$lastDate, $currentStreak, $bestStreak, $totalDays, $userId]);
     
-    // Aggiorna data ultimo studio
-    if ($streakData['last_study_date'] !== $today) {
-        $streakData['total_days_studied']++;
-        $streakData['last_study_date'] = $today;
-    }
-    
-    return $streakData;
+    return [
+        'last_study_date' => $lastDate,
+        'current_streak' => $currentStreak,
+        'best_streak' => $bestStreak,
+        'total_days_studied' => $totalDays,
+        'daily_goal' => $dailyGoal
+    ];
 }
 
 // === STATISTICHE BASE ===
-$total = $db->query("SELECT COUNT(*) as count FROM flashcards WHERE user_id = 1")->fetch()['count'];
-$due = $db->query("SELECT COUNT(*) as count FROM flashcards WHERE user_id = 1 AND next_review <= date('now') AND (suspended IS NULL OR suspended = 0)")->fetch()['count'];
-$new = $db->query("SELECT COUNT(*) as count FROM flashcards WHERE user_id = 1 AND repetitions = 0 AND (suspended IS NULL OR suspended = 0)")->fetch()['count'];
-$leeches = $db->query("SELECT COUNT(*) as count FROM flashcards WHERE user_id = 1 AND suspended = 1")->fetch()['count'];
-$avgEF = $db->query("SELECT AVG(easiness_factor) as avg_ef FROM flashcards WHERE user_id = 1 AND (suspended IS NULL OR suspended = 0)")->fetch()['avg_ef'];
+$stmt = $db->prepare("SELECT COUNT(*) as count FROM flashcards WHERE user_id = ?");
+$stmt->execute([$userId]);
+$total = $stmt->fetch()['count'];
+
+$stmt = $db->prepare("SELECT COUNT(*) as count FROM flashcards WHERE user_id = ? AND next_review <= date('now') AND (suspended IS NULL OR suspended = 0)");
+$stmt->execute([$userId]);
+$due = $stmt->fetch()['count'];
+
+$stmt = $db->prepare("SELECT COUNT(*) as count FROM flashcards WHERE user_id = ? AND repetitions = 0 AND (suspended IS NULL OR suspended = 0)");
+$stmt->execute([$userId]);
+$new = $stmt->fetch()['count'];
+
+$stmt = $db->prepare("SELECT COUNT(*) as count FROM flashcards WHERE user_id = ? AND suspended = 1");
+$stmt->execute([$userId]);
+$leeches = $stmt->fetch()['count'];
+
+$stmt = $db->prepare("SELECT AVG(easiness_factor) as avg_ef FROM flashcards WHERE user_id = ? AND (suspended IS NULL OR suspended = 0)");
+$stmt->execute([$userId]);
+$avgEF = $stmt->fetch()['avg_ef'];
 
 // === CARTE RIVISTE OGGI ===
-$reviewedToday = 0;
-$stmt = $db->query("
-    SELECT COUNT(*) as count 
-    FROM flashcards 
-    WHERE user_id = 1 AND date(last_review) = date('now')
-");
-if ($stmt) {
-    $reviewedToday = (int)$stmt->fetch()['count'];
-}
+$stmt = $db->prepare("SELECT COUNT(*) as count FROM flashcards WHERE user_id = ? AND date(last_review) = date('now')");
+$stmt->execute([$userId]);
+$reviewedToday = (int)$stmt->fetch()['count'];
 
 // === GESTIONE STREAK ===
-$streakData = loadStreakData($streakFile);
-$streakData = updateStreak($streakData, $reviewedToday);
-saveStreakData($streakFile, $streakData);
+$streakData = updateStreak($db, $userId, $reviewedToday);
 
 // === STATISTICHE SETTIMANALI ===
-$weekStats = $db->query("
+$stmt = $db->prepare("
     SELECT 
         date(last_review) as study_date,
         COUNT(*) as cards_reviewed
     FROM flashcards 
-    WHERE user_id = 1 
+    WHERE user_id = ? 
     AND last_review >= date('now', '-7 days')
     AND last_review IS NOT NULL
     GROUP BY date(last_review)
     ORDER BY study_date DESC
-")->fetchAll(PDO::FETCH_ASSOC);
+");
+$stmt->execute([$userId]);
+$weekStats = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-// Calcola media carte/giorno questa settimana
 $totalCardsWeek = array_sum(array_column($weekStats, 'cards_reviewed'));
 $daysStudiedWeek = count($weekStats);
 $avgCardsPerDay = $daysStudiedWeek > 0 ? round($totalCardsWeek / $daysStudiedWeek) : 0;
 
 // === BREAKDOWN PER CATEGORIA ===
-$categoryStats = $db->query("
+$stmt = $db->prepare("
     SELECT 
         COALESCE(category, 'Senza categoria') as category,
         COUNT(*) as total,
@@ -152,41 +159,49 @@ $categoryStats = $db->query("
         ROUND(AVG(CASE WHEN suspended IS NULL OR suspended = 0 THEN easiness_factor END), 2) as avg_ef,
         SUM(COALESCE(lapses, 0)) as total_lapses
     FROM flashcards 
-    WHERE user_id = 1
+    WHERE user_id = ?
     GROUP BY category
     ORDER BY due DESC, total_lapses DESC
-")->fetchAll(PDO::FETCH_ASSOC);
+");
+$stmt->execute([$userId]);
+$categoryStats = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 // === CARTE PROBLEMATICHE ===
-$problematicCards = $db->query("
+$stmt = $db->prepare("
     SELECT id, question, category, lapses, easiness_factor, suspended
     FROM flashcards 
-    WHERE user_id = 1 AND lapses >= 3
+    WHERE user_id = ? AND lapses >= 3
     ORDER BY suspended DESC, lapses DESC
     LIMIT 15
-")->fetchAll(PDO::FETCH_ASSOC);
+");
+$stmt->execute([$userId]);
+$problematicCards = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 // === LEECHES ===
-$leechCards = $db->query("
+$stmt = $db->prepare("
     SELECT id, question, answer, category, lapses, easiness_factor
     FROM flashcards 
-    WHERE user_id = 1 AND suspended = 1
+    WHERE user_id = ? AND suspended = 1
     ORDER BY lapses DESC
-")->fetchAll(PDO::FETCH_ASSOC);
+");
+$stmt->execute([$userId]);
+$leechCards = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 // === PREVISIONE SETTIMANA ===
-$weekForecast = $db->query("
+$stmt = $db->prepare("
     SELECT 
         date(next_review) as review_date,
         COUNT(*) as cards_due
     FROM flashcards 
-    WHERE user_id = 1 
+    WHERE user_id = ? 
     AND next_review > date('now')
     AND next_review <= date('now', '+7 days')
     AND (suspended IS NULL OR suspended = 0)
     GROUP BY date(next_review)
     ORDER BY review_date
-")->fetchAll(PDO::FETCH_ASSOC);
+");
+$stmt->execute([$userId]);
+$weekForecast = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 // === RISPOSTA JSON ===
 echo json_encode([
@@ -197,8 +212,9 @@ echo json_encode([
     'leeches' => (int)$leeches,
     'avg_ef' => round((float)$avgEF, 2),
     'reviewed_today' => $reviewedToday,
+    'user_id' => $userId,
     
-    // === NUOVO: Statistiche Streak ===
+    // Statistiche Streak
     'streak' => [
         'current' => $streakData['current_streak'],
         'best' => $streakData['best_streak'],
@@ -207,7 +223,7 @@ echo json_encode([
         'goal_reached' => $reviewedToday >= $streakData['daily_goal']
     ],
     
-    // === NUOVO: Statistiche settimanali ===
+    // Statistiche settimanali
     'week_activity' => $weekStats,
     'avg_cards_per_day' => $avgCardsPerDay,
     
@@ -222,12 +238,12 @@ echo json_encode([
 ], JSON_PRETTY_PRINT);
 
 /**
- * Genera insight automatici (AGGIORNATO con streak)
+ * Genera insight automatici
  */
 function generateInsights($avgEF, $categories, $problematicCount, $leechCount, $streakData, $reviewedToday) {
     $insights = [];
     
-    // === NUOVO: Insight motivazionali sulla streak ===
+    // Insight motivazionali sulla streak
     if ($streakData['current_streak'] >= 7) {
         $insights[] = "🔥 Fantastico! Streak di {$streakData['current_streak']} giorni! Continua così!";
     } elseif ($streakData['current_streak'] >= 3) {
@@ -256,9 +272,9 @@ function generateInsights($avgEF, $categories, $problematicCount, $leechCount, $
     
     // EF medio
     if ($avgEF < 2.0) {
-        $insights[] = "⚠️ L'EF medio è basso ({$avgEF}). Considera di semplificare le carte più difficili.";
+        $insights[] = "⚠️ L'EF medio è basso (" . round($avgEF, 2) . "). Considera di semplificare le carte più difficili.";
     } elseif ($avgEF > 2.5) {
-        $insights[] = "✅ Ottimo EF medio ({$avgEF}). Stai memorizzando bene!";
+        $insights[] = "✅ Ottimo EF medio (" . round($avgEF, 2) . "). Stai memorizzando bene!";
     }
     
     // Carte a rischio
