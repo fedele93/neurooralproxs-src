@@ -1,24 +1,22 @@
 <?php
 /**
- * API Review - Algoritmo SM-2 con Leeches + Interleaving
+ * API Review - Algoritmo SM-2 con Leeches + Interleaving (AGGIORNATO)
  * 
- * NOVITÀ INTERLEAVING:
+ * MODIFICHE:
+ * - Supporto multi-utente tramite sessione
+ * - Restituisce effective_image per le carte
+ * 
+ * INTERLEAVING:
  * - Alterna automaticamente tra categorie diverse
  * - Evita di mostrare 2+ carte della stessa categoria di fila
  * - Migliora discriminazione e transfer (rif. 33, 38, 49, 52, 55)
- * 
- * PERCHÉ INTERLEAVING? (Base scientifica)
- * La ricerca mostra che alternare categorie durante lo studio:
- * - Migliora la capacità di distinguere concetti simili
- * - Aumenta il transfer di apprendimento del 10-15%
- * - Simula meglio le condizioni di esame reale
- * - Forza il cervello a "ricaricare" il contesto, rafforzando la memoria
  */
 
 header('Content-Type: application/json');
 require_once __DIR__ . '/database.php';
 
 $db = getDatabase();
+$userId = getCurrentUserId();
 
 // === COSTANTI CONFIGURABILI ===
 define('LEECH_THRESHOLD', 4);
@@ -26,9 +24,9 @@ define('LEECH_THRESHOLD', 4);
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $data = json_decode(file_get_contents('php://input'), true);
     
-    // Recupera la carta dal database
-    $stmt = $db->prepare('SELECT * FROM flashcards WHERE id = ?');
-    $stmt->execute([$data['card_id']]);
+    // Recupera la carta dal database (verifica anche user_id per sicurezza)
+    $stmt = $db->prepare('SELECT * FROM flashcards WHERE id = ? AND user_id = ?');
+    $stmt->execute([$data['card_id'], $userId]);
     $card = $stmt->fetch(PDO::FETCH_ASSOC);
     
     if (!$card) {
@@ -95,7 +93,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             lapses = ?,
             last_review = ?,
             suspended = ?
-        WHERE id = ?
+        WHERE id = ? AND user_id = ?
     ');
     $stmt->execute([
         $newEF, 
@@ -105,14 +103,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $newLapses,
         $today,
         $suspended,
-        $data['card_id']
+        $data['card_id'],
+        $userId
     ]);
     
     /**
-     * === NUOVO: Salva l'ultima categoria ripassata per interleaving ===
-     * Usiamo una tabella separata o la sessione. Per semplicità, usiamo un file.
+     * Salva l'ultima categoria ripassata per interleaving
+     * Usa file separato per ogni utente
      */
-    $lastCategoryFile = '/tmp/neurooral_last_category_' . ($card['user_id'] ?? 1) . '.txt';
+    $lastCategoryFile = '/tmp/neurooral_last_category_' . $userId . '.txt';
     file_put_contents($lastCategoryFile, $card['category'] ?? '');
     
     // Prepara risposta
@@ -138,18 +137,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     
 } else {
     /**
-     * === NUOVO: GET con INTERLEAVING ===
-     * 
-     * Strategia:
-     * 1. Leggi l'ultima categoria ripassata
-     * 2. Cerca prima carte di ALTRE categorie
-     * 3. Se non ce ne sono, prendi dalla stessa categoria
-     * 
-     * Questo garantisce massimo mescolamento tra argomenti diversi.
+     * GET: Ottieni prossima carta da ripassare (con INTERLEAVING)
      */
     
     // Leggi l'ultima categoria ripassata
-    $userId = 1; // Per ora fisso, in futuro da sessione
     $lastCategoryFile = '/tmp/neurooral_last_category_' . $userId . '.txt';
     $lastCategory = '';
     if (file_exists($lastCategoryFile)) {
@@ -158,16 +149,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     
     $card = null;
     
-    /**
-     * PASSO 1: Cerca una carta di categoria DIVERSA dall'ultima
-     * 
-     * Perché? L'interleaving forza il cervello a "cambiare contesto",
-     * il che rafforza i percorsi di memoria indipendenti per ogni categoria.
-     * Questo è particolarmente utile per distinguere:
-     * - Sindromi simili (es. Wallenberg vs Weber)
-     * - Farmaci della stessa classe
-     * - Strutture anatomiche adiacenti
-     */
+    // PASSO 1: Cerca una carta di categoria DIVERSA dall'ultima
     if ($lastCategory !== '') {
         $stmt = $db->prepare("
             SELECT * FROM flashcards 
@@ -184,14 +166,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $card = $stmt->fetch(PDO::FETCH_ASSOC);
     }
     
-    /**
-     * PASSO 2: Se non ci sono carte di altre categorie, prendi qualsiasi carta
-     * 
-     * Questo succede quando:
-     * - Rimangono solo carte di una categoria
-     * - È la prima carta della sessione
-     * - Tutte le altre categorie sono completate
-     */
+    // PASSO 2: Se non ci sono carte di altre categorie, prendi qualsiasi carta
     if (!$card) {
         $stmt = $db->prepare("
             SELECT * FROM flashcards 
@@ -207,6 +182,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $card = $stmt->fetch(PDO::FETCH_ASSOC);
     }
     
+    // Aggiungi effective_image alla carta
+    if ($card) {
+        if (!empty($card['image_path'])) {
+            $card['effective_image'] = '/' . $card['image_path'];
+        } elseif (!empty($card['image_url'])) {
+            $card['effective_image'] = $card['image_url'];
+        } else {
+            $card['effective_image'] = null;
+        }
+    }
+    
     // Conta carte rimanenti
     $countStmt = $db->prepare("
         SELECT COUNT(*) as remaining 
@@ -218,10 +204,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $countStmt->execute([$userId]);
     $remaining = $countStmt->fetch()['remaining'];
     
-    /**
-     * === NUOVO: Informazioni extra per debug/statistiche ===
-     * Mostra quante categorie diverse sono ancora da ripassare
-     */
+    // Quante categorie diverse rimangono
     $categoriesStmt = $db->prepare("
         SELECT COUNT(DISTINCT category) as num_categories
         FROM flashcards 
@@ -235,7 +218,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     echo json_encode([
         'card' => $card ?: null,
         'remaining_today' => $remaining,
-        'categories_remaining' => $numCategories,  // Nuovo: per statistiche
-        'interleaving_active' => ($lastCategory !== '' && $numCategories > 1)  // Nuovo: indica se interleaving è attivo
+        'categories_remaining' => $numCategories,
+        'interleaving_active' => ($lastCategory !== '' && $numCategories > 1)
     ]);
 }
